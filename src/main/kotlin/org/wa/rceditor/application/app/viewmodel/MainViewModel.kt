@@ -1,6 +1,6 @@
-package org.wa.resconteditor.application.app.viewmodel
+package org.wa.rceditor.application.app.viewmodel
 
-import org.wa.resconteditor.application.app.model.MainModel
+import org.wa.rceditor.application.app.model.MainModel
 
 class MainViewModel {
     private val model = MainModel()

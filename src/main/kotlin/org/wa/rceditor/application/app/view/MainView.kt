@@ -2,7 +2,7 @@ package org.wa.rceditor.application.app
 
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import org.wa.resconteditor.application.app.viewmodel.MainViewModel
+import org.wa.rceditor.application.app.viewmodel.MainViewModel
 import tornadofx.*
 
 class MainView : View("Resource Container Editor") {

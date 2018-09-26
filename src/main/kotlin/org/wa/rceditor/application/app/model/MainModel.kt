@@ -1,4 +1,4 @@
-package org.wa.resconteditor.application.app.model
+package org.wa.rceditor.application.app.model
 
 import kotlin.system.exitProcess
 
