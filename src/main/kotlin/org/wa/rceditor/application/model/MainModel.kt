@@ -19,4 +19,8 @@ class MainModel {
     fun onAppQuitSelected() {
         exitProcess(-1)
     }
+
+    fun onEditContributorsClick() {
+
+    }
 }

@@ -1,5 +1,6 @@
 package org.wa.rceditor.application.app
 
+import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import org.wa.rceditor.application.viewmodel.MainViewModel
@@ -56,7 +57,14 @@ class MainView : View("Resource Container Editor") {
                                     textfield()
                                 }
                                 field("Contributor") {
-                                    textfield()
+                                    label("") {
+                                        maxWidth = 200.0
+                                    }
+                                    button("Edit") {
+                                        action {
+                                            viewModel.handleEditContributorsClick()
+                                        }
+                                    }
                                 }
                                 field("Creator") {
                                     textfield()
@@ -119,7 +127,7 @@ class MainView : View("Resource Container Editor") {
                     tab("Projects") {
                         squeezebox {
                             multiselect = false
-
+                            maxHeight = 200.0
                             fold("Genesis", expanded = true, closeable = false) {
                                 form {
                                     fieldset {

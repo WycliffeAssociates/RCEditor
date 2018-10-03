@@ -20,4 +20,8 @@ class MainViewModel {
     fun handleAppQuit() {
         model.onAppQuitSelected()
     }
+
+    fun handleEditContributorsClick() {
+        model.onEditContributorsClick()
+    }
 }
