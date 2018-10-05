@@ -1,14 +1,15 @@
 package org.wa.rceditor.application
 
+import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.cssclass
-import tornadofx.px
+import tornadofx.*
 
 class Styles : Stylesheet() {
     companion object {
+        val promptColor by cssproperty<Color>("-fx-prompt-text-fill")
+
         val heading by cssclass()
+        val prompt by cssclass()
     }
 
     init {
@@ -19,6 +20,9 @@ class Styles : Stylesheet() {
         }
         select(form) {
             padding = box(15.px)
+        }
+        prompt {
+            promptColor.value = c("#622")
         }
     }
 }
