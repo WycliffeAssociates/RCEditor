@@ -1,15 +1,10 @@
 package org.wa.rceditor.application.app
 
-import com.jfoenix.controls.*
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
+import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.StackPane
-import javafx.stage.StageStyle
-import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.view.ContributorFragment
-import org.wa.rceditor.application.view.ProjectCell
-import org.wa.rceditor.application.view.ProjectFragment
+import org.wa.rceditor.application.view.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import org.wycliffeassociates.resourcecontainer.entity.Project
 import tornadofx.*
@@ -20,7 +15,7 @@ class MainView : View("Resource Container Editor") {
 
     private val viewModel = MainViewModel()
 
-    private lateinit var tabPane: JFXTabPane
+    private lateinit var tabPane: TabPane
 
     init {
         with(root) {
@@ -59,160 +54,123 @@ class MainView : View("Resource Container Editor") {
                 }
 
                 anchorpane {
-                    tabPane = JFXTabPane().apply {
+                    tabPane = tabpane {
                         tab("Core") {
                             form {
                                 fieldset("Dublin Core") {
                                     prefWidth = 500.0
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Conformsto"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Conformsto") {
+                                        textfield {
                                             bind(viewModel.conformstoProperty)
                                         }
                                     }
                                     field("Contributor") {
-                                        label(viewModel.contributorProperty.value.joinToString(", ")) {
-                                            maxWidth = 200.0
-                                        }
-                                        this += JFXButton("Edit").apply {
+                                        button("Edit") {
                                             action {
-                                                //viewModel.handleEditContributorsClick()
-                                                find<ContributorFragment>(mapOf(ContributorFragment::contributors to viewModel.contributorProperty)).openModal()
+                                                find<ContributorFragment>().openModal()
                                             }
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Creator"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Creator") {
+                                        textfield {
                                             bind(viewModel.creatorProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Description"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Description") {
+                                        textfield {
                                             bind(viewModel.descriptionProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Format"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Format") {
+                                        textfield {
                                             bind(viewModel.formatProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Identifier"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Identifier") {
+                                        textfield {
                                             bind(viewModel.identifierProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXDatePicker().apply {
-                                            promptText = "Issued"
-                                            this.editor.addClass(Styles.prompt)
+                                    field("Issued") {
+                                        datepicker {
                                             bind(viewModel.issuedProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXDatePicker().apply {
-                                            promptText = "Modified"
-                                            this.editor.addClass(Styles.prompt)
+                                    field("Modified") {
+                                        datepicker {
                                             bind(viewModel.modifiedProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Language"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Language") {
+                                        textfield {
+                                            promptText = "Direction"
+                                            bind(viewModel.languageDirectionProperty)
+                                        }
+                                        textfield {
+                                            promptText = "Identifier"
+                                            bind(viewModel.languageIdentifierProperty)
+                                        }
+                                        textfield {
+                                            promptText = "Title"
+                                            bind(viewModel.languageTitleProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Publisher"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Publisher") {
+                                        textfield {
                                             bind(viewModel.publisherProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Relation"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Relation") {
+                                        button("Edit") {
+                                            action {
+                                                find<RelationFragment>().openModal()
+                                            }
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Rights"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Rights") {
+                                        textfield {
                                             bind(viewModel.rightsProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Source"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Source") {
+                                        button("Edit") {
+                                            action {
+                                                find<SourceFragment>().openModal()
+                                            }
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Subject"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Subject") {
+                                        textfield {
                                             bind(viewModel.subjectProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Title"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Title") {
+                                        textfield {
                                             bind(viewModel.titleProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Type"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Type") {
+                                        textfield {
                                             bind(viewModel.typeProperty)
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Version"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Version") {
+                                        textfield {
                                             bind(viewModel.versionProperty)
                                         }
                                     }
                                 }
 
                                 fieldset("Checking") {
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Checking Entity"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Checking Entity") {
+                                        button("Edit") {
+                                            action {
+                                                find<CheckingEntityFragment>().openModal()
+                                            }
                                         }
                                     }
-                                    field {
-                                        this += JFXTextField().apply {
-                                            promptText = "Checking Level"
-                                            addClass(Styles.prompt)
-                                            isLabelFloat = true
+                                    field("Checking Level") {
+                                        textfield {
                                             bind(viewModel.checkingLevelProperty)
                                         }
                                     }
@@ -221,7 +179,6 @@ class MainView : View("Resource Container Editor") {
                         }
 
                         tab("Projects") {
-                            val jfxlist = JFXListView<Project>()
                             val list = FXCollections.observableArrayList<Project>()
                             list.add(Project(
                                     title = "Genesis",
@@ -239,7 +196,7 @@ class MainView : View("Resource Container Editor") {
                                     path = "./exo.usfm",
                                     versification = "ufw"
                             ))
-                            for (i in 3..66) {
+                            for (i in 3..12) {
                                 list.add(Project(
                                         title = "Some Book",
                                         sort = i,
@@ -249,23 +206,22 @@ class MainView : View("Resource Container Editor") {
                                         versification = "ufw"
                                 ))
                             }
-                            jfxlist.items = list
-                            jfxlist.setCellFactory {
-                                val cell = ProjectCell()
-                                cell.button.action {
-                                    //viewModel.handleEditProjectClick(cell.item)
-                                    find<ProjectFragment>(mapOf(ProjectFragment::project to cell.item)).openModal()
-                                }
-                                cell
-                            }
 
-                            this += jfxlist
+                            listview<Project> {
+                                items = list
+                                setCellFactory {
+                                    val cell = ProjectCell()
+                                    cell.button.action {
+                                        //viewModel.handleEditProjectClick(cell.item)
+                                        find<ProjectFragment>(mapOf(ProjectFragment::project to cell.item)).openModal()
+                                    }
+                                    cell
+                                }
+                            }
                         }
                     }
 
-                    this += tabPane
-
-                    this += JFXButton("Add Project").apply {
+                    button("Add Project") {
                         action {
                             find<ProjectFragment>().openModal()
                         }

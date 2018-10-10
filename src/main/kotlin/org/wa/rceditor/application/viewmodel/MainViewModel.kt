@@ -17,7 +17,9 @@ class MainViewModel: ViewModel() {
     var identifierProperty = bind { model.identifierProperty }
     var issuedProperty = bind { model.issuedProperty }
     var modifiedProperty = bind { model.modifiedProperty }
-    var languageProperty = bind { model.languageProperty }
+    var languageDirectionProperty = bind { model.languageDirectionProperty }
+    var languageIdentifierProperty = bind { model.languageIdentifierProperty }
+    var languageTitleProperty = bind { model.languageTitleProperty }
     var publisherProperty = bind { model.publisherProperty }
     var relationProperty = bind { model.relationProperty }
     var rightsProperty = bind { model.rightsProperty }

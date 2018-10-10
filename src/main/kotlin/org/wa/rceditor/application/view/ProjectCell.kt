@@ -1,7 +1,7 @@
 package org.wa.rceditor.application.view
 
-import com.jfoenix.controls.JFXButton
 import javafx.geometry.Pos
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.layout.HBox
@@ -11,7 +11,7 @@ import tornadofx.*
 open class ProjectCell: ListCell<Project> {
     var hbox = HBox()
     val label = Label()
-    val button = JFXButton("Edit")
+    val button = Button("Edit")
 
     constructor(): super() {
         hbox.apply {

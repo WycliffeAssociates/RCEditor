@@ -1,8 +1,6 @@
 package org.wa.rceditor.application.model
 
-import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import org.wycliffeassociates.resourcecontainer.entity.Language
 import org.wycliffeassociates.resourcecontainer.entity.Project
 import org.wycliffeassociates.resourcecontainer.entity.Source
 import tornadofx.*
@@ -37,19 +35,25 @@ class MainModel {
     private var modified: LocalDate by property()
     val modifiedProperty = getProperty(MainModel::modified)
 
-    private var language: Language by property()
-    val languageProperty = getProperty(MainModel::language)
+    private var languageDirection: String by property()
+    val languageDirectionProperty = getProperty(MainModel::languageDirection)
+
+    private var languageIdentifier: String by property()
+    val languageIdentifierProperty = getProperty(MainModel::languageIdentifier)
+
+    private var languageTitle: String by property()
+    val languageTitleProperty = getProperty(MainModel::languageTitle)
 
     private var publisher: String by property()
     val publisherProperty = getProperty(MainModel::publisher)
 
-    private var relation: MutableList<String> by property()
+    private var relation: ObservableList<String> by property()
     val relationProperty = getProperty(MainModel::relation)
 
     private var rights: String by property()
     val rightsProperty = getProperty(MainModel::rights)
 
-    private var source: List<Source> by property()
+    private var source: ObservableList<Source> by property()
     val sourceProperty = getProperty(MainModel::source)
 
     private var subject: String by property()
@@ -64,20 +68,17 @@ class MainModel {
     private var version: String by property()
     val versionProperty = getProperty(MainModel::version)
 
-    private var checkingEntity: MutableList<String> by property()
+    private var checkingEntity: ObservableList<String> by property()
     val checkingEntityProperty = getProperty(MainModel::checkingEntity)
 
     private var checkingLevel: String by property()
     val checkingLevelProperty = getProperty(MainModel::checkingLevel)
 
-    private var projects: List<Project> by property()
+    private var projects: ObservableList<Project> by property()
     val projectsProperty = getProperty(MainModel::projects)
 
     init {
-        contributor = FXCollections.observableArrayList()
-//        contributor.add("efsefsefsefsef")
-//        contributor.add("sklefjlskjefls")
-//        contributor.add("seulsieflslisef")
+
     }
 
     // -------------- Functions --------------- //

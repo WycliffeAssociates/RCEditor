@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class ContributorFragment: Fragment("Contributor") {
+class CheckingEntityFragment: Fragment("Checking Entity") {
     override val root = VBox()
     private val viewModel by inject<MainViewModel>()
     private lateinit var listView: ListView<String>
@@ -19,20 +19,20 @@ class ContributorFragment: Fragment("Contributor") {
             form {
                 fieldset {
                     field {
-                        listView = listview(viewModel.contributorProperty.value) {
+                        listView = listview(viewModel.checkingEntityProperty.value) {
                             minHeight = 100.0
                             prefHeight = 300.0
                             cellFormat {
                                 graphic = hbox {
                                     textfield(it) {
-                                        promptText = "Contributor name"
+                                        promptText = "Checking entity"
                                         prefWidth = 320.0
                                         focusedProperty().onChange {
                                             if (it) {
                                                 listView.selectionModel.select(index)
                                             } else {
                                                 viewModel
-                                                        .contributorProperty
+                                                        .checkingEntityProperty
                                                         .value[listView.selectionModel.selectedIndex] = text
                                             }
                                         }
@@ -40,7 +40,7 @@ class ContributorFragment: Fragment("Contributor") {
 
                                     button("X") {
                                         action {
-                                            viewModel.contributorProperty.value.remove(it)
+                                            viewModel.checkingEntityProperty.value.remove(it)
                                         }
                                     }
 
@@ -58,7 +58,7 @@ class ContributorFragment: Fragment("Contributor") {
                         }
                         button("Add") {
                             action {
-                                viewModel.contributorProperty.value.add("")
+                                viewModel.checkingEntityProperty.value.add("")
                             }
                         }
                         button("Save") {

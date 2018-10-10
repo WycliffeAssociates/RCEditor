@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class ContributorFragment: Fragment("Contributor") {
+class RelationFragment: Fragment("Relation") {
     override val root = VBox()
     private val viewModel by inject<MainViewModel>()
     private lateinit var listView: ListView<String>
@@ -19,20 +19,20 @@ class ContributorFragment: Fragment("Contributor") {
             form {
                 fieldset {
                     field {
-                        listView = listview(viewModel.contributorProperty.value) {
+                        listView = listview(viewModel.relationProperty.value) {
                             minHeight = 100.0
                             prefHeight = 300.0
                             cellFormat {
                                 graphic = hbox {
                                     textfield(it) {
-                                        promptText = "Contributor name"
+                                        promptText = "Relation"
                                         prefWidth = 320.0
                                         focusedProperty().onChange {
                                             if (it) {
                                                 listView.selectionModel.select(index)
                                             } else {
                                                 viewModel
-                                                        .contributorProperty
+                                                        .relationProperty
                                                         .value[listView.selectionModel.selectedIndex] = text
                                             }
                                         }
@@ -40,7 +40,7 @@ class ContributorFragment: Fragment("Contributor") {
 
                                     button("X") {
                                         action {
-                                            viewModel.contributorProperty.value.remove(it)
+                                            viewModel.relationProperty.value.remove(it)
                                         }
                                     }
 
@@ -58,7 +58,7 @@ class ContributorFragment: Fragment("Contributor") {
                         }
                         button("Add") {
                             action {
-                                viewModel.contributorProperty.value.add("")
+                                viewModel.relationProperty.value.add("")
                             }
                         }
                         button("Save") {
