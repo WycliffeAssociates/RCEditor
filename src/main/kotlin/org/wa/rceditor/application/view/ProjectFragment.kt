@@ -17,19 +17,19 @@ class ProjectFragment: Fragment("Project") {
             form {
                 fieldset {
                     field("Title") {
-                        textfield {  }
+                        textfield(project?.title) {  }
                     }
                     field("Versification") {
-                        textfield {  }
+                        textfield(project?.versification) {  }
                     }
                     field("Identifier") {
-                        textfield {  }
+                        textfield(project?.identifier) {  }
                     }
                     field("Sort") {
-                        textfield {  }
+                        textfield(project?.sort.toString()) {  }
                     }
                     field("Path") {
-                        textfield {  }
+                        textfield(project?.path) {  }
                     }
                     field("Categories") {
                         textfield {  }

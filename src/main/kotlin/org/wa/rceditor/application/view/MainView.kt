@@ -2,6 +2,7 @@ package org.wa.rceditor.application.app
 
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
+import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import org.wa.rceditor.application.view.*
@@ -209,13 +210,26 @@ class MainView : View("Resource Container Editor") {
 
                             listview<Project> {
                                 items = list
-                                setCellFactory {
+                                /*setCellFactory {
                                     val cell = ProjectCell()
                                     cell.button.action {
                                         //viewModel.handleEditProjectClick(cell.item)
                                         find<ProjectFragment>(mapOf(ProjectFragment::project to cell.item)).openModal()
                                     }
                                     cell
+                                }*/
+                                cellFormat {
+                                    graphic = hbox {
+                                        label("${it.sort}. ${it.title} (${it.identifier})")
+                                        button("Edit") {
+                                            action {
+                                                find<ProjectFragment>(mapOf(ProjectFragment::project to it)).openModal()
+                                            }
+                                        }
+
+                                        spacing = 5.0
+                                        alignment = Pos.CENTER_LEFT
+                                    }
                                 }
                             }
                         }

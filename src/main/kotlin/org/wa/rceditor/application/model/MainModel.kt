@@ -78,7 +78,9 @@ class MainModel {
     val projectsProperty = getProperty(MainModel::projects)
 
     init {
-
+        contributor = mutableListOf<String>().observable()
+        contributor.add("fawfawf")
+        contributor.add("gjejsekgs")
     }
 
     // -------------- Functions --------------- //
