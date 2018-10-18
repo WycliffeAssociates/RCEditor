@@ -1,20 +1,17 @@
 package org.wa.rceditor.application.app
 
 import javafx.beans.binding.Bindings
-import javafx.collections.FXCollections
-import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import org.wa.rceditor.application.view.*
+import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
-import org.wycliffeassociates.resourcecontainer.entity.Project
 import tornadofx.*
 
 
 class MainView : View("Resource Container Editor") {
     override val root = BorderPane()
 
-    private val viewModel = MainViewModel()
+    private val viewModel by inject<MainViewModel>()
 
     private lateinit var tabPane: TabPane
 
@@ -56,6 +53,7 @@ class MainView : View("Resource Container Editor") {
 
                 anchorpane {
                     tabPane = tabpane {
+                        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
                         tab("Core") {
                             form {
                                 fieldset("Dublin Core") {
@@ -180,57 +178,9 @@ class MainView : View("Resource Container Editor") {
                         }
 
                         tab("Projects") {
-                            val list = FXCollections.observableArrayList<Project>()
-                            list.add(Project(
-                                    title = "Genesis",
-                                    sort = 1,
-                                    categories = listOf(),
-                                    identifier = "gen",
-                                    path = "./gen.usfm",
-                                    versification = "ufw"
-                            ))
-                            list.add(Project(
-                                    title = "Exodus",
-                                    sort = 2,
-                                    categories = listOf(),
-                                    identifier = "exo",
-                                    path = "./exo.usfm",
-                                    versification = "ufw"
-                            ))
-                            for (i in 3..12) {
-                                list.add(Project(
-                                        title = "Some Book",
-                                        sort = i,
-                                        categories = listOf(),
-                                        identifier = "smb",
-                                        path = "./smb.usfm",
-                                        versification = "ufw"
-                                ))
-                            }
-
-                            listview<Project> {
-                                items = list
-                                /*setCellFactory {
-                                    val cell = ProjectCell()
-                                    cell.button.action {
-                                        //viewModel.handleEditProjectClick(cell.item)
-                                        find<ProjectFragment>(mapOf(ProjectFragment::project to cell.item)).openModal()
-                                    }
-                                    cell
-                                }*/
-                                cellFormat {
-                                    graphic = hbox {
-                                        label("${it.sort}. ${it.title} (${it.identifier})")
-                                        button("Edit") {
-                                            action {
-                                                find<ProjectFragment>(mapOf(ProjectFragment::project to it)).openModal()
-                                            }
-                                        }
-
-                                        spacing = 5.0
-                                        alignment = Pos.CENTER_LEFT
-                                    }
-                                }
+                            listview(viewModel.projects()) {
+                                isEditable = true
+                                cellFragment(ProjectItemFragment::class)
                             }
                         }
                     }
