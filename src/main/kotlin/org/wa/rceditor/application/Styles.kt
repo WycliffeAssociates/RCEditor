@@ -19,9 +19,31 @@ class Styles : Stylesheet() {
         val addItemRoot by cssclass()
         val boldLabel by cssclass()
 
+        val menuIcon by cssclass()
+
         fun closeIcon() = FontAwesomeIconView(FontAwesomeIcon.CLOSE).apply {
             glyphSize = 22
             addClass(closeIcon)
+        }
+
+        fun newFileIcon() = FontAwesomeIconView(FontAwesomeIcon.FILE_ALT).apply {
+            glyphSize = 22
+            addClass(menuIcon)
+        }
+
+        fun openFileIcon() = FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN_ALT).apply {
+            glyphSize = 22
+            addClass(menuIcon)
+        }
+
+        fun saveFileIcon() = FontAwesomeIconView(FontAwesomeIcon.SAVE).apply {
+            glyphSize = 22
+            addClass(menuIcon)
+        }
+
+        fun quitIcon() = FontAwesomeIconView(FontAwesomeIcon.SIGN_OUT).apply {
+            glyphSize = 22
+            addClass(menuIcon)
         }
     }
 
@@ -31,9 +53,6 @@ class Styles : Stylesheet() {
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
         }
-        select(form) {
-            padding = box(15.px)
-        }
         prompt {
             promptColor.value = c("#622")
         }
@@ -42,6 +61,13 @@ class Styles : Stylesheet() {
 
             and(hover) {
                 fill = c("#af5b5e")
+            }
+        }
+        menuIcon {
+            fill = c("#000")
+
+            and(hover) {
+                fill = c("#f00")
             }
         }
         itemRoot {

@@ -76,7 +76,7 @@ class ProjectFragment: Fragment("Project") {
 
             button("Add") {
                 vboxConstraints {
-                    padding = insets(10.0, 7.0)
+                    padding = insets(15.0, 7.0)
                 }
                 action {
                     if (titleField.text.trim().isNotEmpty()

@@ -144,7 +144,7 @@ class MainModel {
     // ---------- Handlers --------- //
 
     fun onNewDocumentSelected() {
-        chooseDirectory("Open Resource Container").apply {
+        chooseDirectory("Create Resource Container").apply {
             if (this != null) {
                 directory = this
                 container = ResourceContainer.create(directory) {
@@ -161,6 +161,7 @@ class MainModel {
             if (this != null) {
                 directory = this
                 container = ResourceContainer.load(directory)
+                clearData()
                 directoryLoaded = true
                 loadRecourceContainer()
             }

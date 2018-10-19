@@ -5,6 +5,8 @@ import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Priority
+import javafx.scene.paint.Paint
+import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
@@ -19,30 +21,42 @@ class MainView : View("Resource Container Editor") {
 
     init {
         with(root) {
-            //setMinSize(1024.0, 768.0)
-
             top {
-                menubar {
-                    menu("File") {
-                        item("New") {
+                vbox {
+                    hbox {
+                        vboxConstraints {
+                            marginTop = 10.0
+                        }
+                        spacing = 5.0
+                        button(graphic = Styles.newFileIcon()) {
+                            tooltip("Create new resource container")
                             action {
                                 viewModel.handleNewDocumentSelected()
                             }
                         }
-                        item("Open") {
+                        button(graphic = Styles.openFileIcon()) {
+                            tooltip("Open resource container")
                             action {
                                 viewModel.handleOpenDocumentSelected()
                             }
                         }
-                        item("Save") {
+                        button(graphic = Styles.saveFileIcon()) {
+                            tooltip("Save resource container")
                             action {
                                 viewModel.handleSaveDocumentSelected()
                             }
                         }
-                        item("Quit") {
+                        button(graphic = Styles.quitIcon()) {
+                            tooltip("Quit")
                             action {
                                 viewModel.handleAppQuit()
                             }
+                        }
+                    }
+
+                    separator {
+                        vboxConstraints {
+                            marginTop = 5.0
                         }
                     }
                 }
@@ -52,174 +66,152 @@ class MainView : View("Resource Container Editor") {
                 borderpaneConstraints {
                     paddingHorizontal = 20.0
                 }
-
                 stackpane {
-                    hbox {
-                        stackpaneConstraints {
-                            margin = insets(200.0)
-                        }
+                    tabPane = tabpane {
+                        visibleWhen { viewModel.directoryLoadedProperty }
+                        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+                        tab("Core") {
+                            form {
+                                fieldset("Dublin Core") {
+                                    field("Conformsto") {
+                                        textfield {
+                                            bind(viewModel.conformstoProperty)
+                                        }
+                                    }
+                                    field("Contributor") {
+                                        button("Edit") {
+                                            action {
+                                                find<ContributorFragment>().openModal()
+                                            }
+                                        }
+                                    }
+                                    field("Creator") {
+                                        textfield {
+                                            bind(viewModel.creatorProperty)
+                                        }
+                                    }
+                                    field("Description") {
+                                        textfield {
+                                            bind(viewModel.descriptionProperty)
+                                        }
+                                    }
+                                    field("Format") {
+                                        textfield {
+                                            bind(viewModel.formatProperty)
+                                        }
+                                    }
+                                    field("Identifier") {
+                                        textfield {
+                                            bind(viewModel.identifierProperty)
+                                        }
+                                    }
+                                    field("Issued") {
+                                        datepicker {
+                                            bind(viewModel.issuedProperty)
+                                        }
+                                    }
+                                    field("Modified") {
+                                        datepicker {
+                                            bind(viewModel.modifiedProperty)
+                                        }
+                                    }
+                                    field("Language") {
+                                        textfield {
+                                            promptText = "Direction"
+                                            bind(viewModel.languageDirectionProperty)
+                                        }
+                                        textfield {
+                                            promptText = "Identifier"
+                                            bind(viewModel.languageIdentifierProperty)
+                                        }
+                                        textfield {
+                                            promptText = "Title"
+                                            bind(viewModel.languageTitleProperty)
+                                        }
+                                    }
+                                    field("Publisher") {
+                                        textfield {
+                                            bind(viewModel.publisherProperty)
+                                        }
+                                    }
+                                    field("Relation") {
+                                        button("Edit") {
+                                            action {
+                                                find<RelationFragment>().openModal()
+                                            }
+                                        }
+                                    }
+                                    field("Rights") {
+                                        textfield {
+                                            bind(viewModel.rightsProperty)
+                                        }
+                                    }
+                                    field("Source") {
+                                        button("Edit") {
+                                            action {
+                                                find<SourceFragment>().openModal()
+                                            }
+                                        }
+                                    }
+                                    field("Subject") {
+                                        textfield {
+                                            bind(viewModel.subjectProperty)
+                                        }
+                                    }
+                                    field("Title") {
+                                        textfield {
+                                            bind(viewModel.titleProperty)
+                                        }
+                                    }
+                                    field("Type") {
+                                        textfield {
+                                            bind(viewModel.typeProperty)
+                                        }
+                                    }
+                                    field("Version") {
+                                        textfield {
+                                            bind(viewModel.versionProperty)
+                                        }
+                                    }
+                                }
 
-                        removeWhen { viewModel.directoryLoadedProperty }
-                        spacing = 10.0
-                        button("New") {
-                            action {
-                                viewModel.handleNewDocumentSelected()
+                                fieldset("Checking") {
+                                    field("Checking Entity") {
+                                        button("Edit") {
+                                            action {
+                                                find<CheckingEntityFragment>().openModal()
+                                            }
+                                        }
+                                    }
+                                    field("Checking Level") {
+                                        textfield {
+                                            bind(viewModel.checkingLevelProperty)
+                                        }
+                                    }
+                                }
                             }
                         }
-                        button("Open") {
-                            action {
-                                viewModel.handleOpenDocumentSelected()
+
+                        tab("Projects") {
+                            listview(viewModel.projects()) {
+                                paddingBottom = 5.0
+                                isEditable = true
+                                cellFragment(ProjectItemFragment::class)
                             }
                         }
                     }
 
-                    anchorpane {
-                        visibleWhen { viewModel.directoryLoadedProperty }
-                        tabPane = tabpane {
-                            tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
-                            tab("Core") {
-                                form {
-                                    fieldset("Dublin Core") {
-                                        prefWidth = 500.0
-                                        field("Conformsto") {
-                                            textfield {
-                                                bind(viewModel.conformstoProperty)
-                                            }
-                                        }
-                                        field("Contributor") {
-                                            button("Edit") {
-                                                action {
-                                                    find<ContributorFragment>().openModal()
-                                                }
-                                            }
-                                        }
-                                        field("Creator") {
-                                            textfield {
-                                                bind(viewModel.creatorProperty)
-                                            }
-                                        }
-                                        field("Description") {
-                                            textfield {
-                                                bind(viewModel.descriptionProperty)
-                                            }
-                                        }
-                                        field("Format") {
-                                            textfield {
-                                                bind(viewModel.formatProperty)
-                                            }
-                                        }
-                                        field("Identifier") {
-                                            textfield {
-                                                bind(viewModel.identifierProperty)
-                                            }
-                                        }
-                                        field("Issued") {
-                                            datepicker {
-                                                bind(viewModel.issuedProperty)
-                                            }
-                                        }
-                                        field("Modified") {
-                                            datepicker {
-                                                bind(viewModel.modifiedProperty)
-                                            }
-                                        }
-                                        field("Language") {
-                                            textfield {
-                                                promptText = "Direction"
-                                                bind(viewModel.languageDirectionProperty)
-                                            }
-                                            textfield {
-                                                promptText = "Identifier"
-                                                bind(viewModel.languageIdentifierProperty)
-                                            }
-                                            textfield {
-                                                promptText = "Title"
-                                                bind(viewModel.languageTitleProperty)
-                                            }
-                                        }
-                                        field("Publisher") {
-                                            textfield {
-                                                bind(viewModel.publisherProperty)
-                                            }
-                                        }
-                                        field("Relation") {
-                                            button("Edit") {
-                                                action {
-                                                    find<RelationFragment>().openModal()
-                                                }
-                                            }
-                                        }
-                                        field("Rights") {
-                                            textfield {
-                                                bind(viewModel.rightsProperty)
-                                            }
-                                        }
-                                        field("Source") {
-                                            button("Edit") {
-                                                action {
-                                                    find<SourceFragment>().openModal()
-                                                }
-                                            }
-                                        }
-                                        field("Subject") {
-                                            textfield {
-                                                bind(viewModel.subjectProperty)
-                                            }
-                                        }
-                                        field("Title") {
-                                            textfield {
-                                                bind(viewModel.titleProperty)
-                                            }
-                                        }
-                                        field("Type") {
-                                            textfield {
-                                                bind(viewModel.typeProperty)
-                                            }
-                                        }
-                                        field("Version") {
-                                            textfield {
-                                                bind(viewModel.versionProperty)
-                                            }
-                                        }
-                                    }
-
-                                    fieldset("Checking") {
-                                        field("Checking Entity") {
-                                            button("Edit") {
-                                                action {
-                                                    find<CheckingEntityFragment>().openModal()
-                                                }
-                                            }
-                                        }
-                                        field("Checking Level") {
-                                            textfield {
-                                                bind(viewModel.checkingLevelProperty)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            tab("Projects") {
-                                listview(viewModel.projects()) {
-                                    paddingBottom = 30.0
-                                    isEditable = true
-                                    cellFragment(ProjectItemFragment::class)
-                                }
-                            }
+                    button("Add Project") {
+                        stackpaneConstraints {
+                            alignment = Pos.TOP_RIGHT
+                            marginTop = 5.0
+                            marginRight = 5.0
                         }
-
-                        button("Add Project") {
-                            action {
-                                find<ProjectFragment>().openModal()
-                            }
-                            anchorpaneConstraints {
-                                rightAnchor = 2.0
-                                topAnchor = 2.0
-                            }
-                            visibleWhen {
-                                Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())
-                            }
+                        action {
+                            find<ProjectFragment>().openModal()
+                        }
+                        visibleWhen {
+                            Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package org.wa.rceditor.application.view.fragments
 
 import javafx.scene.control.TextField
+import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.viewmodel.MainViewModel
@@ -23,6 +24,7 @@ class SourceFragment: Fragment("Source") {
             hbox {
                 spacing = 5.0
                 vbox {
+                    hgrow = Priority.ALWAYS
                     label("Identifier:") {
                         addClass(Styles.boldLabel)
                     }
@@ -32,6 +34,7 @@ class SourceFragment: Fragment("Source") {
                 }
 
                 vbox {
+                    hgrow = Priority.ALWAYS
                     label("Language:") {
                         addClass(Styles.boldLabel)
                     }
@@ -41,6 +44,7 @@ class SourceFragment: Fragment("Source") {
                 }
 
                 vbox {
+                    hgrow = Priority.ALWAYS
                     label("Version:") {
                         addClass(Styles.boldLabel)
                     }
@@ -50,9 +54,10 @@ class SourceFragment: Fragment("Source") {
                 }
 
                 button("Add") {
+                    hgrow = Priority.ALWAYS
                     hboxConstraints {
                         marginTop = 15.0
-                        padding = insets(7.0)
+                        padding = insets(15.0, 7.0)
                     }
                     action {
                         if (identifierField.text.trim().isNotEmpty()
@@ -73,6 +78,7 @@ class SourceFragment: Fragment("Source") {
 
             listview(viewModel.sources()) {
                 isEditable = true
+                vgrow = Priority.ALWAYS
                 cellFragment(SourceItemFragment::class)
             }
         }

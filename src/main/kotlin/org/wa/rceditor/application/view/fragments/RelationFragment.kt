@@ -1,5 +1,6 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.viewmodel.MainViewModel
@@ -26,6 +27,7 @@ class RelationFragment: Fragment("Relation") {
 
             listview(viewModel.relations()) {
                 isEditable = true
+                vgrow = Priority.ALWAYS
                 cellFragment(RelationItemFragment::class)
             }
         }
