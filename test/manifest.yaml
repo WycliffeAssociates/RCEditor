@@ -1,0 +1,49 @@
+---
+dublin_core:
+  type: "kh fskejfhksjeh"
+  conformsto: "afhawjfa"
+  format: " hfslejhflsehfjhsl"
+  identifier: "h lsejhflshelfjsh"
+  title: "khfks ejhfksjehf"
+  subject: "fjshe jhfksejhfksj"
+  description: "hfljehfljsefjshe sejfh slhjehfl sjehfl jshelf jhse"
+  language:
+    direction: "fshe jfhske"
+    identifier: "h fskehfks"
+    title: "hkj hfskejfh"
+  source:
+  - identifier: "hfskefh"
+    language: "hfksjehfk"
+    version: "kfskejfh"
+  rights: "kfh skjehf ks"
+  creator: "efwejfhwefh"
+  contributor:
+  - "wjhfajwhfa"
+  - "lfalwfjhawjf"
+  relation:
+  - "fjse fjhske"
+  - "fksekfhse"
+  - "kfuksekufs"
+  publisher: "khfkssejhf kjsehkf shkef"
+  issued: "2018-10-11"
+  modified: "2018-10-31"
+  version: "khfsk ejhfksj"
+projects:
+- title: "f hsekfhske"
+  versification: "s kfsek"
+  identifier: "h skffjhf"
+  sort: 312
+  path: "hsk jfhksejfhksj"
+  categories:
+  - "kj skeejhfkjsef"
+- title: "hsjefhks"
+  versification: "se kfjshek fjsh"
+  identifier: "f ehskejhf kseh"
+  sort: 5241
+  path: "hskfejhfk sje"
+  categories:
+  - "kj hskejhfkse"
+checking:
+  checking_entity:
+  - "fhsejfhskj ehfsjefksje"
+  checking_level: "1"

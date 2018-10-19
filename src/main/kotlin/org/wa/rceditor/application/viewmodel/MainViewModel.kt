@@ -28,6 +28,8 @@ class MainViewModel: ViewModel() {
     var versionProperty = bind { model.versionProperty }
     var checkingLevelProperty = bind { model.checkingLevelProperty }
 
+    var directoryLoadedProperty = bind { model.directoryLoadedProperty }
+
     // ------------ Functions -------------- //
 
     fun contributors(): ObservableList<ContributorItem> {
