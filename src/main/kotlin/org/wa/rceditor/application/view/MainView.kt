@@ -1,48 +1,62 @@
 package org.wa.rceditor.application.app
 
 import javafx.beans.binding.Bindings
-import javafx.collections.FXCollections
+import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import org.wa.rceditor.application.view.*
+import javafx.scene.layout.Priority
+import javafx.scene.paint.Paint
+import org.wa.rceditor.application.Styles
+import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
-import org.wycliffeassociates.resourcecontainer.entity.Project
 import tornadofx.*
 
 
 class MainView : View("Resource Container Editor") {
     override val root = BorderPane()
 
-    private val viewModel = MainViewModel()
+    private val viewModel by inject<MainViewModel>()
 
     private lateinit var tabPane: TabPane
 
     init {
         with(root) {
-            //setMinSize(1024.0, 768.0)
-
             top {
-                menubar {
-                    menu("File") {
-                        item("New") {
+                vbox {
+                    hbox {
+                        vboxConstraints {
+                            marginTop = 10.0
+                        }
+                        spacing = 5.0
+                        button(graphic = Styles.newFileIcon()) {
+                            tooltip("Create new resource container")
                             action {
                                 viewModel.handleNewDocumentSelected()
                             }
                         }
-                        item("Open") {
+                        button(graphic = Styles.openFileIcon()) {
+                            tooltip("Open resource container")
                             action {
                                 viewModel.handleOpenDocumentSelected()
                             }
                         }
-                        item("Save") {
+                        button(graphic = Styles.saveFileIcon()) {
+                            tooltip("Save resource container")
                             action {
                                 viewModel.handleSaveDocumentSelected()
                             }
                         }
-                        item("Quit") {
+                        button(graphic = Styles.quitIcon()) {
+                            tooltip("Quit")
                             action {
                                 viewModel.handleAppQuit()
                             }
+                        }
+                    }
+
+                    separator {
+                        vboxConstraints {
+                            marginTop = 5.0
                         }
                     }
                 }
@@ -52,13 +66,13 @@ class MainView : View("Resource Container Editor") {
                 borderpaneConstraints {
                     paddingHorizontal = 20.0
                 }
-
-                anchorpane {
+                stackpane {
                     tabPane = tabpane {
+                        visibleWhen { viewModel.directoryLoadedProperty }
+                        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
                         tab("Core") {
                             form {
                                 fieldset("Dublin Core") {
-                                    prefWidth = 500.0
                                     field("Conformsto") {
                                         textfield {
                                             bind(viewModel.conformstoProperty)
@@ -179,55 +193,22 @@ class MainView : View("Resource Container Editor") {
                         }
 
                         tab("Projects") {
-                            val list = FXCollections.observableArrayList<Project>()
-                            list.add(Project(
-                                    title = "Genesis",
-                                    sort = 1,
-                                    categories = listOf(),
-                                    identifier = "gen",
-                                    path = "./gen.usfm",
-                                    versification = "ufw"
-                            ))
-                            list.add(Project(
-                                    title = "Exodus",
-                                    sort = 2,
-                                    categories = listOf(),
-                                    identifier = "exo",
-                                    path = "./exo.usfm",
-                                    versification = "ufw"
-                            ))
-                            for (i in 3..12) {
-                                list.add(Project(
-                                        title = "Some Book",
-                                        sort = i,
-                                        categories = listOf(),
-                                        identifier = "smb",
-                                        path = "./smb.usfm",
-                                        versification = "ufw"
-                                ))
-                            }
-
-                            listview<Project> {
-                                items = list
-                                setCellFactory {
-                                    val cell = ProjectCell()
-                                    cell.button.action {
-                                        //viewModel.handleEditProjectClick(cell.item)
-                                        find<ProjectFragment>(mapOf(ProjectFragment::project to cell.item)).openModal()
-                                    }
-                                    cell
-                                }
+                            listview(viewModel.projects()) {
+                                paddingBottom = 5.0
+                                isEditable = true
+                                cellFragment(ProjectItemFragment::class)
                             }
                         }
                     }
 
                     button("Add Project") {
+                        stackpaneConstraints {
+                            alignment = Pos.TOP_RIGHT
+                            marginTop = 5.0
+                            marginRight = 5.0
+                        }
                         action {
                             find<ProjectFragment>().openModal()
-                        }
-                        anchorpaneConstraints {
-                            rightAnchor = 2.0
-                            topAnchor = 2.0
                         }
                         visibleWhen {
                             Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())
