@@ -1,13 +1,12 @@
 package org.wa.rceditor.application.model
 
-import javafx.beans.property.SimpleObjectProperty
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
+import io.reactivex.schedulers.Schedulers
 import javafx.collections.ObservableList
+import org.wa.rceditor.api.RCManagerImpl
+import org.wa.rceditor.domain.MainUseCase
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
-import org.wycliffeassociates.resourcecontainer.entity.Checking
-import org.wycliffeassociates.resourcecontainer.entity.DublinCore
-import org.wycliffeassociates.resourcecontainer.entity.Manifest
 import tornadofx.*
-import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
@@ -77,7 +76,6 @@ class MainModel {
     val directoryLoadedProperty = getProperty(MainModel::directoryLoaded)
 
     lateinit var container: ResourceContainer
-    lateinit var directory: File
 
     // -------------- Functions --------------- //
 
@@ -144,28 +142,32 @@ class MainModel {
     // ---------- Handlers --------- //
 
     fun onNewDocumentSelected() {
-        chooseDirectory("Create Resource Container").apply {
-            if (this != null) {
-                directory = this
-                container = ResourceContainer.create(directory) {
-                    this.manifest = Manifest(DublinCore(), listOf(), Checking())
+        MainUseCase(RCManagerImpl()).createResourceContainer()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribeOn(Schedulers.io())
+                /*.onErrorReturn {
+                    println(it.message)
+                }*/
+                .subscribe {
+                    container = it
+                    clearData()
+                    directoryLoaded = true
                 }
-                clearData()
-                directoryLoaded = true
-            }
-        }
     }
 
     fun onOpenDocumentSelected() {
-        chooseDirectory("Open Resource Container").apply {
-            if (this != null) {
-                directory = this
-                container = ResourceContainer.load(directory)
-                clearData()
-                directoryLoaded = true
-                loadRecourceContainer()
-            }
-        }
+        MainUseCase(RCManagerImpl()).openResourceContainer()
+                .observeOn(JavaFxScheduler.platform())
+                .subscribeOn(Schedulers.io())
+                /*.onErrorReturn {
+                    println(it.message)
+                }*/
+                .subscribe {
+                    container = it
+                    clearData()
+                    directoryLoaded = true
+                    loadRecourceContainer()
+                }
     }
 
     fun onSaveDocumentSelected() {
@@ -242,10 +244,18 @@ class MainModel {
             container.manifest.dublinCore.contributor = contributors.map { it.text }.toMutableList()
             container.manifest.dublinCore.relation = relations.map { it.text }.toMutableList()
             container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
-            container.manifest.checking.checkingEntity = checkingEntities.map { it.text }.toMutableList()
-            container.manifest.projects = projects.map { it.toProject() }.toMutableList()
+            container.manifest.checking.checkingEntity = checkingEntities.map { it.text }.toList()
+            container.manifest.projects = projects.map { it.toProject() }.toList()
 
-            container.write()
+            MainUseCase(RCManagerImpl()).saveResourceContainer(container)
+                    .observeOn(JavaFxScheduler.platform())
+                    .subscribeOn(Schedulers.io())
+                    /*.onErrorReturn {
+                        println(it.message)
+                    }*/
+                    .subscribe {
+                        println("Saved")
+                    }
 
             // TODO show success popup
         }

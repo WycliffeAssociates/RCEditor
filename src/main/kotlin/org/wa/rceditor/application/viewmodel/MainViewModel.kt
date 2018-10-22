@@ -2,7 +2,6 @@ package org.wa.rceditor.application.viewmodel
 
 import javafx.collections.ObservableList
 import org.wa.rceditor.application.model.*
-import org.wycliffeassociates.resourcecontainer.entity.Project
 import tornadofx.*
 
 class MainViewModel: ViewModel() {

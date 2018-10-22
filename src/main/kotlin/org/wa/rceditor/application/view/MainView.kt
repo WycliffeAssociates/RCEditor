@@ -4,8 +4,6 @@ import javafx.beans.binding.Bindings
 import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Priority
-import javafx.scene.paint.Paint
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
