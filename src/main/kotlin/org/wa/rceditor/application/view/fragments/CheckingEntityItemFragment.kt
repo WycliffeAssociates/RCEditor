@@ -1,26 +1,25 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.beans.property.StringProperty
 import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.model.CheckingEntityItem
-import org.wa.rceditor.application.model.CheckingEntityItemModel
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class CheckingEntityItemFragment: ListCellFragment<CheckingEntityItem>() {
+class CheckingEntityItemFragment: ListCellFragment<StringProperty>() {
     private val viewModel by inject<MainViewModel>()
-    private val checkingEntity = CheckingEntityItemModel(itemProperty)
+    private val entity = ItemViewModel(itemProperty = itemProperty).bind { item }
 
     override val root = hbox {
         addClass(Styles.itemRoot)
 
-        label(checkingEntity.text) {
+        label(entity) {
             setId(Styles.contentLabel)
             hgrow = Priority.ALWAYS
             useMaxSize = true
             removeWhen { editingProperty }
         }
-        textfield(checkingEntity.text) {
+        textfield(entity) {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }

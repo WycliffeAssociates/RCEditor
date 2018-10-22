@@ -3,7 +3,6 @@ package org.wa.rceditor.application.model
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
 import org.wycliffeassociates.resourcecontainer.entity.Project
-import org.wycliffeassociates.resourcecontainer.entity.Source
 import tornadofx.*
 import java.util.*
 

@@ -1,26 +1,25 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.beans.property.StringProperty
 import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.model.RelationItem
-import org.wa.rceditor.application.model.RelationItemModel
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class RelationItemFragment: ListCellFragment<RelationItem>() {
+class RelationItemFragment: ListCellFragment<StringProperty>() {
     private val viewModel by inject<MainViewModel>()
-    private val relation = RelationItemModel(itemProperty)
+    private val relation = ItemViewModel(itemProperty = itemProperty).bind { item }
 
     override val root = hbox {
         addClass(Styles.itemRoot)
 
-        label(relation.text) {
+        label(relation) {
             setId(Styles.contentLabel)
             hgrow = Priority.ALWAYS
             useMaxSize = true
             removeWhen { editingProperty }
         }
-        textfield(relation.text) {
+        textfield(relation) {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }

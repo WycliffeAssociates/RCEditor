@@ -2,13 +2,18 @@ package org.wa.rceditor.application.viewmodel
 
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
-import javafx.collections.FXCollections
+import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
 import org.wa.rceditor.api.RCManagerImpl
-import org.wa.rceditor.application.model.*
+import org.wa.rceditor.application.model.ProjectItem
+import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.domain.MainUseCase
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
+import org.wycliffeassociates.resourcecontainer.entity.Project
+import org.wycliffeassociates.resourcecontainer.entity.Source
 import tornadofx.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -72,10 +77,10 @@ class MainViewModel: ViewModel() {
 
     lateinit var container: ResourceContainer
 
-    private val contributors = SortedFilteredList<ContributorItem>()
-    private val relations = SortedFilteredList<RelationItem>()
+    private val contributors = SortedFilteredList<StringProperty>()
+    private val relations = SortedFilteredList<StringProperty>()
     private val sources = SortedFilteredList<SourceItem>()
-    private val checkingEntities = SortedFilteredList<CheckingEntityItem>()
+    private val checkingEntities = SortedFilteredList<StringProperty>()
     private val projects = SortedFilteredList<ProjectItem>()
 
 
@@ -121,27 +126,27 @@ class MainViewModel: ViewModel() {
 
     // ------------ Functions -------------- //
 
-    fun contributors(): ObservableList<ContributorItem> {
+    fun contributors(): ObservableList<StringProperty> {
         return contributors
     }
 
     fun addContributor(text: String) {
-        contributors.add(ContributorItem(text))
+        contributors.add(SimpleStringProperty(text))
     }
 
-    fun removeContributor(item: ContributorItem) {
-        //contributors.remove(item)
+    fun removeContributor(item: StringProperty) {
+        contributors.remove(item)
     }
 
-    fun relations(): ObservableList<RelationItem> {
+    fun relations(): ObservableList<StringProperty> {
         return relations
     }
 
     fun addRelation(text: String) {
-        relations.add(RelationItem(text))
+        relations.add(SimpleStringProperty(text))
     }
 
-    fun removeRelation(item: RelationItem) {
+    fun removeRelation(item: StringProperty) {
         relations.remove(item)
     }
 
@@ -157,15 +162,15 @@ class MainViewModel: ViewModel() {
         sources.remove(item)
     }
 
-    fun checkingEntities(): ObservableList<CheckingEntityItem> {
+    fun checkingEntities(): ObservableList<StringProperty> {
         return checkingEntities
     }
 
     fun addCheckingEntity(text: String) {
-        checkingEntities.add(CheckingEntityItem(text))
+        checkingEntities.add(SimpleStringProperty(text))
     }
 
-    fun removeCheckingEntity(item: CheckingEntityItem) {
+    fun removeCheckingEntity(item: StringProperty) {
         checkingEntities.remove(item)
     }
 
@@ -182,8 +187,6 @@ class MainViewModel: ViewModel() {
     }
 
     fun loadRecourceContainer() {
-        // TODO load on background thread
-
         conformsto = container.manifest.dublinCore.conformsTo
         creator = container.manifest.dublinCore.creator
         description = container.manifest.dublinCore.description
@@ -202,7 +205,7 @@ class MainViewModel: ViewModel() {
         version = container.manifest.dublinCore.version
         checkingLevel = container.manifest.checking.checkingLevel
 
-        contributors.addAll(container.manifest.dublinCore.contributor.map { ContributorItem(it) })
+        contributors.addAll(container.manifest.dublinCore.contributor.map { SimpleStringProperty(it) })
 
         container.manifest.dublinCore.relation.forEach {
             addRelation(it)
@@ -242,10 +245,10 @@ class MainViewModel: ViewModel() {
             container.manifest.dublinCore.version = version
             container.manifest.checking.checkingLevel = checkingLevel
 
-            //container.manifest.dublinCore.contributor = contributors.map { it.text }.toMutableList()
-            container.manifest.dublinCore.relation = relations.map { it.text }.toMutableList()
+            container.manifest.dublinCore.contributor = contributors.map { it.value }.toMutableList()
+            container.manifest.dublinCore.relation = relations.map { it.value }.toMutableList()
             container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
-            container.manifest.checking.checkingEntity = checkingEntities.map { it.text }.toList()
+            container.manifest.checking.checkingEntity = checkingEntities.map { it.value }.toList()
             container.manifest.projects = projects.map { it.toProject() }.toList()
 
             MainUseCase(RCManagerImpl()).saveResourceContainer(container)
