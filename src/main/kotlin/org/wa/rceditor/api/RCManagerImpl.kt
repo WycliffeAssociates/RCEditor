@@ -11,33 +11,21 @@ import tornadofx.*
 
 class RCManagerImpl: RCManager {
     override fun open(): Maybe<ResourceContainer> {
-        chooseDirectory("Open Resource Container").apply {
-            if (this != null) {
-                return try {
-                    Maybe.fromCallable {
-                        ResourceContainer.load(this)
-                    }
-                } catch (e: Exception) {
-                    println(e.message)
-                    Maybe.empty()
-                }
+        val file = chooseDirectory("Open Resource Container")
+        if (file != null) {
+            return Maybe.fromCallable {
+                ResourceContainer.load(file)
             }
         }
         return Maybe.empty()
     }
 
     override fun create(): Maybe<ResourceContainer> {
-        chooseDirectory("Create Resource Container").apply {
-            if (this != null) {
-                return  try {
-                    Maybe.fromCallable {
-                        ResourceContainer.create(this) {
-                            this.manifest = Manifest(DublinCore(), listOf(), Checking())
-                        }
-                    }
-                } catch (e: java.lang.Exception) {
-                    println(e.message)
-                    Maybe.empty()
+        val file = chooseDirectory("Create Resource Container")
+        if (file != null) {
+            return Maybe.fromCallable {
+                ResourceContainer.create(file) {
+                    this.manifest = Manifest(DublinCore(), listOf(), Checking())
                 }
             }
         }

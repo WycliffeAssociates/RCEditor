@@ -2,8 +2,6 @@ package org.wa.rceditor.application.viewmodel
 
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
@@ -12,8 +10,6 @@ import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.domain.MainUseCase
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
-import org.wycliffeassociates.resourcecontainer.entity.Project
-import org.wycliffeassociates.resourcecontainer.entity.Source
 import tornadofx.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
