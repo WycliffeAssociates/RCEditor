@@ -35,7 +35,7 @@ class MainView : View("Resource Container Editor") {
                         button(graphic = Styles.openFileIcon()) {
                             tooltip("Open resource container")
                             action {
-                                viewModel.handleOpenDocumentSelected()
+                                viewModel.handleOpenDirectorySelected()
                             }
                         }
                         button(graphic = Styles.saveFileIcon()) {
@@ -194,7 +194,7 @@ class MainView : View("Resource Container Editor") {
                             listview(viewModel.projects()) {
                                 paddingBottom = 5.0
                                 isEditable = true
-                                cellFragment(ProjectItemFragment::class)
+                                cellFragment(ProjectCell::class)
                             }
                         }
                     }

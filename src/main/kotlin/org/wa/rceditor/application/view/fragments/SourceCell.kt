@@ -7,7 +7,7 @@ import org.wa.rceditor.application.model.SourceItemModel
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class SourceItemFragment: ListCellFragment<SourceItem>() {
+class SourceCell: ListCellFragment<SourceItem>() {
     private val viewModel by inject<MainViewModel>()
     private val source = SourceItemModel(itemProperty)
 

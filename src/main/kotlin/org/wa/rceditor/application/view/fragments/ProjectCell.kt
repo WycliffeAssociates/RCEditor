@@ -8,7 +8,7 @@ import org.wa.rceditor.application.model.ProjectItemModel
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class ProjectItemFragment: ListCellFragment<ProjectItem>() {
+class ProjectCell: ListCellFragment<ProjectItem>() {
     private val viewModel by inject<MainViewModel>()
     private val project = ProjectItemModel(itemProperty)
 

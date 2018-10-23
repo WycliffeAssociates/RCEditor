@@ -5,10 +5,13 @@ import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ObservableList
-import org.wa.rceditor.api.RCManagerImpl
+import javafx.stage.FileChooser
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
-import org.wa.rceditor.domain.MainUseCase
+import org.wa.rceditor.application.view.fragments.DialogFragment
+import org.wa.rceditor.domain.create
+import org.wa.rceditor.domain.open
+import org.wa.rceditor.domain.save
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import tornadofx.*
 import java.time.LocalDate
@@ -83,32 +86,40 @@ class MainViewModel: ViewModel() {
     // ------------- Handlers ---------------- //
 
     fun handleNewDocumentSelected() {
-        MainUseCase(RCManagerImpl()).createResourceContainer()
-                .observeOn(JavaFxScheduler.platform())
-                .subscribeOn(Schedulers.io())
-                /*.onErrorReturn {
-                    println(it.message)
-                }*/
-                .subscribe {
-                    container = it
-                    clearData()
-                    directoryLoaded = true
-                }
+        chooseDirectory("Create Resource Container")?.let {
+            ResourceContainer.create(it)
+                    .observeOn(JavaFxScheduler.platform())
+                    .subscribeOn(Schedulers.io())
+                    .doOnError {
+                        println(it.message)
+                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                    }
+                    .onErrorComplete()
+                    .subscribe {
+                        container = it
+                        clearViewData()
+                        directoryLoaded = true
+                    }
+        }
     }
 
-    fun handleOpenDocumentSelected() {
-        MainUseCase(RCManagerImpl()).openResourceContainer()
-                .observeOn(JavaFxScheduler.platform())
-                .subscribeOn(Schedulers.io())
-                /*.onErrorReturn {
-                    println(it.message)
-                }*/
-                .subscribe {
-                    container = it
-                    clearData()
-                    directoryLoaded = true
-                    loadRecourceContainer()
-                }
+    fun handleOpenDirectorySelected() {
+        chooseDirectory("Open Resource Container")?.let {
+            ResourceContainer.open(it)
+                    .observeOn(JavaFxScheduler.platform())
+                    .subscribeOn(Schedulers.io())
+                    .doOnError {
+                        println(it.message)
+                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                    }
+                    .onErrorComplete()
+                    .subscribe {
+                        container = it
+                        clearViewData()
+                        directoryLoaded = true
+                        setViewData()
+                    }
+        }
     }
 
     fun handleSaveDocumentSelected() {
@@ -182,7 +193,7 @@ class MainViewModel: ViewModel() {
         projects.remove(item)
     }
 
-    fun loadRecourceContainer() {
+    fun setViewData() {
         conformsto = container.manifest.dublinCore.conformsTo
         creator = container.manifest.dublinCore.creator
         description = container.manifest.dublinCore.description
@@ -202,27 +213,18 @@ class MainViewModel: ViewModel() {
         checkingLevel = container.manifest.checking.checkingLevel
 
         contributors.addAll(container.manifest.dublinCore.contributor.map { SimpleStringProperty(it) })
+        relations.addAll(container.manifest.dublinCore.relation.map { SimpleStringProperty(it) })
+        sources.addAll(container.manifest.dublinCore.source.map { SourceItem(it.identifier, it.language, it.version) })
+        checkingEntities.addAll(container.manifest.checking.checkingEntity.map { SimpleStringProperty(it) })
 
-        container.manifest.dublinCore.relation.forEach {
-            addRelation(it)
-        }
-
-        container.manifest.dublinCore.source.forEach {
-            addSource(it.identifier, it.language, it.version)
-        }
-
-        container.manifest.checking.checkingEntity.forEach {
-            addCheckingEntity(it)
-        }
-
-        container.manifest.projects.forEach {
-            addProject(it.title, it.versification, it.identifier, it.sort, it.path,
+        projects.addAll(container.manifest.projects.map {
+            ProjectItem(it.title, it.versification, it.identifier, it.sort, it.path,
                     if(it.categories.isNotEmpty()) it.categories.first() else "Unknown")
-        }
+        })
     }
 
     fun saveResourceContainer() {
-        if (validateData()) {
+        if (validateViewData()) {
             container.manifest.dublinCore.conformsTo = conformsto
             container.manifest.dublinCore.creator = creator
             container.manifest.dublinCore.description = description
@@ -247,24 +249,27 @@ class MainViewModel: ViewModel() {
             container.manifest.checking.checkingEntity = checkingEntities.map { it.value }.toList()
             container.manifest.projects = projects.map { it.toProject() }.toList()
 
-            MainUseCase(RCManagerImpl()).saveResourceContainer(container)
+            ResourceContainer.save(container)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
-                    /*.onErrorReturn {
+                    .doOnError {
                         println(it.message)
-                    }*/
+                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                    }
+                    .onErrorComplete()
                     .subscribe {
                         println("Saved")
+                        showPopup(DialogFragment.TYPE.SUCCESS,
+                                "The Resource Container has been successfully saved!")
                     }
-
-            // TODO show success popup
         }
         else {
-            // TODO show error popup
+            showPopup(DialogFragment.TYPE.ERROR,
+                    "The Resource Container has not been saved! Check the data filled in properly.")
         }
     }
 
-    fun validateData(): Boolean {
+    fun validateViewData(): Boolean {
         if (conformsto.isNullOrEmpty()
                 || creator.isNullOrEmpty()
                 || description.isNullOrEmpty()
@@ -293,7 +298,7 @@ class MainViewModel: ViewModel() {
         return true
     }
 
-    fun clearData() {
+    fun clearViewData() {
         conformsto = ""
         creator = ""
         description = ""
@@ -316,5 +321,14 @@ class MainViewModel: ViewModel() {
         sources.clear()
         checkingEntities.clear()
         projects.clear()
+    }
+
+    fun showPopup(type: DialogFragment.TYPE?, message: String?) {
+        find<DialogFragment>(
+                mapOf(
+                        DialogFragment::type to type,
+                        DialogFragment::message to message
+                )
+        ).openModal()
     }
 }

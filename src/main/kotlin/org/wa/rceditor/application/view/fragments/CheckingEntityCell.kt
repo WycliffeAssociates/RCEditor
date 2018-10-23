@@ -6,7 +6,7 @@ import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class CheckingEntityItemFragment: ListCellFragment<StringProperty>() {
+class CheckingEntityCell: ListCellFragment<StringProperty>() {
     private val viewModel by inject<MainViewModel>()
     private val entity = ItemViewModel(itemProperty = itemProperty).bind { item }
 

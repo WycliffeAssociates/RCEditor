@@ -79,7 +79,7 @@ class SourceFragment: Fragment("Source") {
             listview(viewModel.sources()) {
                 isEditable = true
                 vgrow = Priority.ALWAYS
-                cellFragment(SourceItemFragment::class)
+                cellFragment(SourceCell::class)
             }
         }
     }
