@@ -6,7 +6,7 @@ import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class RelationItemFragment: ListCellFragment<StringProperty>() {
+class RelationCell: ListCellFragment<StringProperty>() {
     private val viewModel by inject<MainViewModel>()
     private val relation = ItemViewModel(itemProperty = itemProperty).bind { item }
 

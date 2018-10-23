@@ -28,7 +28,7 @@ class RelationFragment: Fragment("Relation") {
             listview(viewModel.relations()) {
                 isEditable = true
                 vgrow = Priority.ALWAYS
-                cellFragment(RelationItemFragment::class)
+                cellFragment(RelationCell::class)
             }
         }
     }
