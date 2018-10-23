@@ -25,7 +25,7 @@ class CheckingEntityFragment: Fragment("Checking Entity") {
                 }
             }
 
-            listview(viewModel.checkingEntities()) {
+            listview(viewModel.checkingEntitiesProperty.value) {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(CheckingEntityCell::class)

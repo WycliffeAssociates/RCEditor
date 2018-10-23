@@ -26,7 +26,7 @@ class ContributorFragment: Fragment("Contributor") {
                     }
                 }
             }
-            listview(viewModel.contributors()) {
+            listview(viewModel.contributorsProperty.value) {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(ContributorCell::class)

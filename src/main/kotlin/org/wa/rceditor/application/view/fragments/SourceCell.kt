@@ -4,11 +4,9 @@ import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.model.SourceItemModel
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class SourceCell: ListCellFragment<SourceItem>() {
-    private val viewModel by inject<MainViewModel>()
     private val source = SourceItemModel(itemProperty)
 
     override val root = hbox {
@@ -43,7 +41,7 @@ class SourceCell: ListCellFragment<SourceItem>() {
         }
         button(graphic = Styles.closeIcon()) {
             removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { viewModel.removeSource(item) }
+            action { cell?.listView?.items?.remove(item) }
         }
     }
 }

@@ -3,12 +3,11 @@ package org.wa.rceditor.application.view.fragments
 import javafx.beans.property.StringProperty
 import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class CheckingEntityCell: ListCellFragment<StringProperty>() {
-    private val viewModel by inject<MainViewModel>()
-    private val entity = ItemViewModel(itemProperty = itemProperty).bind { item }
+    private val entity = ItemViewModel(itemProperty = itemProperty)
+            .bind(autocommit = true) { item }
 
     override val root = hbox {
         addClass(Styles.itemRoot)
@@ -29,7 +28,7 @@ class CheckingEntityCell: ListCellFragment<StringProperty>() {
         }
         button(graphic = Styles.closeIcon()) {
             removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { viewModel.removeCheckingEntity(item) }
+            action { cell?.listView?.items?.remove(item) }
         }
     }
 }

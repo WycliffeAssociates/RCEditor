@@ -191,7 +191,7 @@ class MainView : View("Resource Container Editor") {
                         }
 
                         tab("Projects") {
-                            listview(viewModel.projects()) {
+                            listview(viewModel.projectsProperty.value) {
                                 paddingBottom = 5.0
                                 isEditable = true
                                 cellFragment(ProjectCell::class)

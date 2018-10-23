@@ -82,6 +82,7 @@ class ProjectFragment: Fragment("Project") {
                     if (titleField.text.trim().isNotEmpty()
                             and identifierField.text.trim().isNotEmpty()
                             and sortField.text.trim().isNotEmpty()
+                            and (sortField.text.trim().toInt() <= 66)
                             and versificationField.text.trim().isNotEmpty()
                             and pathField.text.trim().isNotEmpty()
                             and categoryField.text.trim().isNotEmpty()) {

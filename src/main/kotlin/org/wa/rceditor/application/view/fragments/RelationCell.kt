@@ -3,12 +3,11 @@ package org.wa.rceditor.application.view.fragments
 import javafx.beans.property.StringProperty
 import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class RelationCell: ListCellFragment<StringProperty>() {
-    private val viewModel by inject<MainViewModel>()
-    private val relation = ItemViewModel(itemProperty = itemProperty).bind { item }
+    private val relation = ItemViewModel(itemProperty = itemProperty)
+            .bind(autocommit = true) { item }
 
     override val root = hbox {
         addClass(Styles.itemRoot)
@@ -29,7 +28,7 @@ class RelationCell: ListCellFragment<StringProperty>() {
         }
         button(graphic = Styles.closeIcon()) {
             removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { viewModel.removeRelation(item) }
+            action { cell?.listView?.items?.remove(item) }
         }
     }
 }

@@ -2,10 +2,9 @@ package org.wa.rceditor.application.viewmodel
 
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
+import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
-import javafx.collections.ObservableList
-import javafx.stage.FileChooser
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.view.fragments.DialogFragment
@@ -74,13 +73,22 @@ class MainViewModel: ViewModel() {
     private var directoryLoaded: Boolean by property()
     val directoryLoadedProperty = getProperty(MainViewModel::directoryLoaded)
 
-    lateinit var container: ResourceContainer
-
     private val contributors = SortedFilteredList<StringProperty>()
+    val contributorsProperty = SimpleListProperty(contributors)
+
     private val relations = SortedFilteredList<StringProperty>()
+    val relationsProperty = SimpleListProperty(relations)
+
     private val sources = SortedFilteredList<SourceItem>()
+    val sourcesProperty = SimpleListProperty(sources)
+
     private val checkingEntities = SortedFilteredList<StringProperty>()
+    val checkingEntitiesProperty = SimpleListProperty(checkingEntities)
+
     private val projects = SortedFilteredList<ProjectItem>()
+    val projectsProperty = SimpleListProperty(projects)
+
+    lateinit var container: ResourceContainer
 
 
     // ------------- Handlers ---------------- //
@@ -133,20 +141,12 @@ class MainViewModel: ViewModel() {
 
     // ------------ Functions -------------- //
 
-    fun contributors(): ObservableList<StringProperty> {
-        return contributors
-    }
-
     fun addContributor(text: String) {
         contributors.add(SimpleStringProperty(text))
     }
 
     fun removeContributor(item: StringProperty) {
         contributors.remove(item)
-    }
-
-    fun relations(): ObservableList<StringProperty> {
-        return relations
     }
 
     fun addRelation(text: String) {
@@ -157,10 +157,6 @@ class MainViewModel: ViewModel() {
         relations.remove(item)
     }
 
-    fun sources(): ObservableList<SourceItem> {
-        return sources
-    }
-
     fun addSource(identifier: String, language: String, version: String) {
         sources.add(SourceItem(identifier, language, version))
     }
@@ -169,20 +165,12 @@ class MainViewModel: ViewModel() {
         sources.remove(item)
     }
 
-    fun checkingEntities(): ObservableList<StringProperty> {
-        return checkingEntities
-    }
-
     fun addCheckingEntity(text: String) {
         checkingEntities.add(SimpleStringProperty(text))
     }
 
     fun removeCheckingEntity(item: StringProperty) {
         checkingEntities.remove(item)
-    }
-
-    fun projects(): ObservableList<ProjectItem> {
-        return projects
     }
 
     fun addProject(title: String, versification: String, identifier: String, sort: Int, path: String, category: String) {

@@ -76,7 +76,7 @@ class SourceFragment: Fragment("Source") {
                 }
             }
 
-            listview(viewModel.sources()) {
+            listview(viewModel.sourcesProperty.value) {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(SourceCell::class)

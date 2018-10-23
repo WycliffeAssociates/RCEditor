@@ -5,11 +5,9 @@ import javafx.util.converter.NumberStringConverter
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.ProjectItemModel
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class ProjectCell: ListCellFragment<ProjectItem>() {
-    private val viewModel by inject<MainViewModel>()
     private val project = ProjectItemModel(itemProperty)
 
     override val root = hbox {
@@ -72,7 +70,7 @@ class ProjectCell: ListCellFragment<ProjectItem>() {
 
         button(graphic = Styles.closeIcon()) {
             removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { viewModel.removeProject(item) }
+            action { cell?.listView?.items?.remove(item) }
         }
     }
 }
