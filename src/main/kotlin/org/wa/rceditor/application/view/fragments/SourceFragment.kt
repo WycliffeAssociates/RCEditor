@@ -1,15 +1,16 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.scene.control.ListView
 import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.viewmodel.MainViewModel
+import org.wa.rceditor.application.model.SourceItem
 import tornadofx.*
 
 class SourceFragment: Fragment("Source") {
     override val root = VBox()
-    private val viewModel by inject<MainViewModel>()
+    var listView: ListView<SourceItem> by singleAssign()
 
     private var identifierField by singleAssign<TextField>()
     private var languageField by singleAssign<TextField>()
@@ -63,11 +64,11 @@ class SourceFragment: Fragment("Source") {
                         if (identifierField.text.trim().isNotEmpty()
                                 and languageField.text.trim().isNotEmpty()
                                 and versionField.text.trim().isNotEmpty()) {
-                            viewModel.addSource(
+                            listView.items.add(SourceItem(
                                     identifierField.text.trim(),
                                     languageField.text.trim(),
-                                    versionField.text.trim()
-                            )
+                                    versionField.text.trim()))
+
                             identifierField.clear()
                             languageField.clear()
                             versionField.clear()
@@ -76,7 +77,7 @@ class SourceFragment: Fragment("Source") {
                 }
             }
 
-            listview(viewModel.sourcesProperty.value) {
+            listView = listview {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(SourceCell::class)

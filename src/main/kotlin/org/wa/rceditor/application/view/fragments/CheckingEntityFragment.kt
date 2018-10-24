@@ -1,14 +1,16 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.StringProperty
+import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class CheckingEntityFragment: Fragment("Checking Entity") {
     override val root = VBox()
-    private val viewModel by inject<MainViewModel>()
+    var listView: ListView<StringProperty> by singleAssign()
 
     init {
         with(root) {
@@ -18,17 +20,16 @@ class CheckingEntityFragment: Fragment("Checking Entity") {
 
             textfield {
                 addClass(Styles.addItemRoot)
-                promptText = "Checking Entity"
                 action {
-                    viewModel.addCheckingEntity(text)
+                    listView.items.add(SimpleStringProperty(text.trim()))
                     clear()
                 }
             }
 
-            listview(viewModel.checkingEntitiesProperty.value) {
+            listView = listview {
                 isEditable = true
                 vgrow = Priority.ALWAYS
-                cellFragment(CheckingEntityCell::class)
+                cellFragment(StringCell::class)
             }
         }
     }

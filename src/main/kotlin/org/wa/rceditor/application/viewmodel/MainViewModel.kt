@@ -70,9 +70,6 @@ class MainViewModel: ViewModel() {
     private var checkingLevel: String by property()
     val checkingLevelProperty = getProperty(MainViewModel::checkingLevel)
 
-    private var directoryLoaded: Boolean by property()
-    val directoryLoadedProperty = getProperty(MainViewModel::directoryLoaded)
-
     private val contributors = SortedFilteredList<StringProperty>()
     val contributorsProperty = SimpleListProperty(contributors)
 
@@ -88,6 +85,12 @@ class MainViewModel: ViewModel() {
     private val projects = SortedFilteredList<ProjectItem>()
     val projectsProperty = SimpleListProperty(projects)
 
+    private var directoryLoaded: Boolean by property()
+    val directoryLoadedProperty = getProperty(MainViewModel::directoryLoaded)
+
+    private var processing: Boolean by property()
+    val processingProperty = getProperty(MainViewModel::processing)
+
     lateinit var container: ResourceContainer
 
 
@@ -95,14 +98,16 @@ class MainViewModel: ViewModel() {
 
     fun handleNewDocumentSelected() {
         chooseDirectory("Create Resource Container")?.let {
+            processing = true
+            directoryLoaded = false
             ResourceContainer.create(it)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        println(it.message)
                         showPopup(DialogFragment.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
+                    .doFinally { processing = false }
                     .subscribe {
                         container = it
                         clearViewData()
@@ -113,14 +118,16 @@ class MainViewModel: ViewModel() {
 
     fun handleOpenDirectorySelected() {
         chooseDirectory("Open Resource Container")?.let {
+            processing = true
+            directoryLoaded = false
             ResourceContainer.open(it)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        println(it.message)
                         showPopup(DialogFragment.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
+                    .doFinally { processing = false }
                     .subscribe {
                         container = it
                         clearViewData()
@@ -140,46 +147,6 @@ class MainViewModel: ViewModel() {
 
 
     // ------------ Functions -------------- //
-
-    fun addContributor(text: String) {
-        contributors.add(SimpleStringProperty(text))
-    }
-
-    fun removeContributor(item: StringProperty) {
-        contributors.remove(item)
-    }
-
-    fun addRelation(text: String) {
-        relations.add(SimpleStringProperty(text))
-    }
-
-    fun removeRelation(item: StringProperty) {
-        relations.remove(item)
-    }
-
-    fun addSource(identifier: String, language: String, version: String) {
-        sources.add(SourceItem(identifier, language, version))
-    }
-
-    fun removeSource(item: SourceItem) {
-        sources.remove(item)
-    }
-
-    fun addCheckingEntity(text: String) {
-        checkingEntities.add(SimpleStringProperty(text))
-    }
-
-    fun removeCheckingEntity(item: StringProperty) {
-        checkingEntities.remove(item)
-    }
-
-    fun addProject(title: String, versification: String, identifier: String, sort: Int, path: String, category: String) {
-        projects.add(ProjectItem(title, versification, identifier, sort, path, category))
-    }
-
-    fun removeProject(item: ProjectItem) {
-        projects.remove(item)
-    }
 
     fun setViewData() {
         conformsto = container.manifest.dublinCore.conformsTo
@@ -237,16 +204,17 @@ class MainViewModel: ViewModel() {
             container.manifest.checking.checkingEntity = checkingEntities.map { it.value }.toList()
             container.manifest.projects = projects.map { it.toProject() }.toList()
 
+            processing = true
+
             ResourceContainer.save(container)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        println(it.message)
                         showPopup(DialogFragment.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
+                    .doFinally { processing = false }
                     .subscribe {
-                        println("Saved")
                         showPopup(DialogFragment.TYPE.SUCCESS,
                                 "The Resource Container has been successfully saved!")
                     }

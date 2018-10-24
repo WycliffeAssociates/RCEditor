@@ -1,14 +1,16 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.StringProperty
+import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class RelationFragment: Fragment("Relation") {
     override val root = VBox()
-    private val viewModel by inject<MainViewModel>()
+    var listView: ListView<StringProperty> by singleAssign()
 
     init {
         with(root) {
@@ -20,15 +22,15 @@ class RelationFragment: Fragment("Relation") {
                 addClass(Styles.addItemRoot)
                 promptText = "Relation"
                 action {
-                    viewModel.addRelation(text)
+                    listView.items.add(SimpleStringProperty(text.trim()))
                     clear()
                 }
             }
 
-            listview(viewModel.relationsProperty.value) {
+            listView = listview {
                 isEditable = true
                 vgrow = Priority.ALWAYS
-                cellFragment(RelationCell::class)
+                cellFragment(StringCell::class)
             }
         }
     }

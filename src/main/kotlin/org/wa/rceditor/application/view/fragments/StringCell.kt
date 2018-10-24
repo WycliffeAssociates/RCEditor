@@ -5,7 +5,7 @@ import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
 import tornadofx.*
 
-class ContributorCell: ListCellFragment<StringProperty>() {
+class StringCell: ListCellFragment<StringProperty>() {
     private val contributor = ItemViewModel(itemProperty = itemProperty)
             .bind(autocommit = true) { item }
 
@@ -23,7 +23,6 @@ class ContributorCell: ListCellFragment<StringProperty>() {
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }
             action { if (text.trim().isNotEmpty()) commitEdit(item) }
-            promptText = "Contributor name"
             required()
         }
         button(graphic = Styles.closeIcon()) {

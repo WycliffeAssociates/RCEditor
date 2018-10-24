@@ -2,9 +2,11 @@ package org.wa.rceditor.application.app
 
 import javafx.beans.binding.Bindings
 import javafx.geometry.Pos
+import javafx.scene.control.ListView
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import org.wa.rceditor.application.Styles
+import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
@@ -16,6 +18,7 @@ class MainView : View("Resource Container Editor") {
     private val viewModel by inject<MainViewModel>()
 
     private lateinit var tabPane: TabPane
+    private lateinit var projListView: ListView<ProjectItem>
 
     init {
         with(root) {
@@ -79,7 +82,9 @@ class MainView : View("Resource Container Editor") {
                                     field("Contributor") {
                                         button("Edit") {
                                             action {
-                                                find<ContributorFragment>().openModal()
+                                                val sf = find<ContributorFragment>()
+                                                sf.listView.items = viewModel.contributorsProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
@@ -135,7 +140,9 @@ class MainView : View("Resource Container Editor") {
                                     field("Relation") {
                                         button("Edit") {
                                             action {
-                                                find<RelationFragment>().openModal()
+                                                val sf = find<RelationFragment>()
+                                                sf.listView.items = viewModel.relationsProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
@@ -147,7 +154,9 @@ class MainView : View("Resource Container Editor") {
                                     field("Source") {
                                         button("Edit") {
                                             action {
-                                                find<SourceFragment>().openModal()
+                                                val sf = find<SourceFragment>()
+                                                sf.listView.items = viewModel.sourcesProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
@@ -177,7 +186,9 @@ class MainView : View("Resource Container Editor") {
                                     field("Checking Entity") {
                                         button("Edit") {
                                             action {
-                                                find<CheckingEntityFragment>().openModal()
+                                                val sf = find<CheckingEntityFragment>()
+                                                sf.listView.items = viewModel.checkingEntitiesProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
@@ -191,12 +202,16 @@ class MainView : View("Resource Container Editor") {
                         }
 
                         tab("Projects") {
-                            listview(viewModel.projectsProperty.value) {
+                            projListView = listview(viewModel.projectsProperty.value) {
                                 paddingBottom = 5.0
                                 isEditable = true
                                 cellFragment(ProjectCell::class)
                             }
                         }
+                    }
+
+                    progressbar {
+                        visibleWhen { viewModel.processingProperty }
                     }
 
                     button("Add Project") {
@@ -206,7 +221,7 @@ class MainView : View("Resource Container Editor") {
                             marginRight = 5.0
                         }
                         action {
-                            find<ProjectFragment>().openModal()
+                            find<ProjectFragment>(mapOf(ProjectFragment::listView to projListView)).openModal()
                         }
                         visibleWhen {
                             Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())
