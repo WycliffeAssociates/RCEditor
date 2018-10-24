@@ -19,7 +19,7 @@ class SourceItem(identifier: String, language: String, version: String) {
 
 class SourceItemModel(property: ObjectProperty<SourceItem>) :
         ItemViewModel<SourceItem>(itemProperty = property) {
-    val identifier = bind(autocommit = true) { item?.identifierProperty }
-    val language = bind(autocommit = true) { item?.languageProperty }
-    val version = bind(autocommit = true) { item?.versionProperty }
+    val identifier = bind { item?.identifierProperty }
+    val language = bind { item?.languageProperty }
+    val version = bind { item?.versionProperty }
 }

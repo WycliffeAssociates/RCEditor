@@ -21,21 +21,30 @@ class SourceCell: ListCellFragment<SourceItem>() {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }
-            action { commitEdit(item) }
+            action {
+                source.commit()
+                commitEdit(item)
+            }
             promptText = "Identifier"
             required()
         }
         textfield(source.language) {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
-            action { commitEdit(item) }
+            action {
+                source.commit()
+                commitEdit(item)
+            }
             promptText = "Language"
             required()
         }
         textfield(source.version) {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
-            action { commitEdit(item) }
+            action {
+                source.commit()
+                commitEdit(item)
+            }
             promptText = "Version"
             required()
         }

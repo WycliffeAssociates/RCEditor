@@ -6,8 +6,8 @@ import org.wa.rceditor.application.Styles
 import tornadofx.*
 
 class StringCell: ListCellFragment<StringProperty>() {
-    private val contributor = ItemViewModel(itemProperty = itemProperty)
-            .bind(autocommit = true) { item }
+    private val ivm = ItemViewModel(itemProperty = itemProperty)
+    private val contributor = ivm.bind { item }
 
     override val root = hbox {
         addClass(Styles.itemRoot)
@@ -22,7 +22,12 @@ class StringCell: ListCellFragment<StringProperty>() {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }
-            action { if (text.trim().isNotEmpty()) commitEdit(item) }
+            action {
+                if (text.trim().isNotEmpty()) {
+                    ivm.commit()
+                    commitEdit(item)
+                }
+            }
             required()
         }
         button(graphic = Styles.closeIcon()) {

@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.view.fragments.DialogFragment
+import org.wa.rceditor.domain.ValidateResourceContainer
 import org.wa.rceditor.domain.create
 import org.wa.rceditor.domain.open
 import org.wa.rceditor.domain.save
@@ -142,7 +143,7 @@ class MainViewModel: ViewModel() {
     }
 
     fun handleAppQuit() {
-        exitProcess(-1)
+        exitProcess(0)
     }
 
 
@@ -179,7 +180,7 @@ class MainViewModel: ViewModel() {
     }
 
     fun saveResourceContainer() {
-        if (validateViewData()) {
+        try {
             container.manifest.dublinCore.conformsTo = conformsto
             container.manifest.dublinCore.creator = creator
             container.manifest.dublinCore.description = description
@@ -204,54 +205,28 @@ class MainViewModel: ViewModel() {
             container.manifest.checking.checkingEntity = checkingEntities.map { it.value }.toList()
             container.manifest.projects = projects.map { it.toProject() }.toList()
 
-            processing = true
-
-            ResourceContainer.save(container)
-                    .observeOn(JavaFxScheduler.platform())
-                    .subscribeOn(Schedulers.io())
-                    .doOnError {
-                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
-                    }
-                    .onErrorComplete()
-                    .doFinally { processing = false }
-                    .subscribe {
-                        showPopup(DialogFragment.TYPE.SUCCESS,
-                                "The Resource Container has been successfully saved!")
-                    }
-        }
-        else {
+            if (ValidateResourceContainer().validate(container)) {
+                processing = true
+                ResourceContainer.save(container)
+                        .observeOn(JavaFxScheduler.platform())
+                        .subscribeOn(Schedulers.io())
+                        .doOnError {
+                            showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                        }
+                        .onErrorComplete()
+                        .doFinally { processing = false }
+                        .subscribe {
+                            showPopup(DialogFragment.TYPE.SUCCESS,
+                                    "The Resource Container has been successfully saved!")
+                        }
+            } else {
+                showPopup(DialogFragment.TYPE.ERROR,
+                        "The Resource Container has not been saved! Check the data filled in properly.")
+            }
+        } catch (e: Exception) {
             showPopup(DialogFragment.TYPE.ERROR,
                     "The Resource Container has not been saved! Check the data filled in properly.")
         }
-    }
-
-    fun validateViewData(): Boolean {
-        if (conformsto.isNullOrEmpty()
-                || creator.isNullOrEmpty()
-                || description.isNullOrEmpty()
-                || format.isNullOrEmpty()
-                || identifier.isNullOrEmpty()
-                || issued == null
-                || modified == null
-                || languageDirection.isNullOrEmpty()
-                || languageIdentifier.isNullOrEmpty()
-                || languageTitle.isNullOrEmpty()
-                || publisher.isNullOrEmpty()
-                || rights.isNullOrEmpty()
-                || subject.isNullOrEmpty()
-                || title.isNullOrEmpty()
-                || type.isNullOrEmpty()
-                || version.isNullOrEmpty()
-                || checkingLevel.isNullOrEmpty()
-                || contributors.isEmpty()
-                || relations.isEmpty()
-                || sources.isEmpty()
-                || checkingEntities.isEmpty()
-                || projects.isEmpty()) {
-            return false
-        }
-
-        return true
     }
 
     fun clearViewData() {

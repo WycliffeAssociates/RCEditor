@@ -31,38 +31,56 @@ class ProjectCell: ListCellFragment<ProjectItem>() {
                         hgrow = Priority.ALWAYS
                         removeWhen { editingProperty.not() }
                         whenVisible { requestFocus() }
-                        action { commitEdit(item) }
+                        action {
+                            project.commit()
+                            commitEdit(item)
+                        }
                     }
                 }
                 field("Versification") {
                     textfield(project.versification) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        action {
+                            project.commit()
+                            commitEdit(item)
+                        }
                     }
                 }
                 field("Identifier") {
                     textfield(project.identifier) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        action {
+                            project.commit()
+                            commitEdit(item)
+                        }
                     }
                 }
                 field("Sort") {
                     textfield(project.sort, NumberStringConverter()) {
                         filterInput { it.controlNewText.isInt() }
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        action {
+                            project.commit()
+                            commitEdit(item)
+                        }
                     }
                 }
                 field("Path") {
                     textfield(project.path) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        action {
+                            project.commit()
+                            commitEdit(item)
+                        }
                     }
                 }
                 field("Category") {
                     textfield(project.category) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        action {
+                            project.commit()
+                            commitEdit(item)
+                        }
                     }
                 }
             }
