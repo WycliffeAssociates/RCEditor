@@ -1,22 +1,18 @@
 package org.wa.rceditor.application.view.fragments
 
+import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.ListView
-import javafx.scene.control.TextField
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
+import org.wa.rceditor.application.model.ProjectItemModel
 import tornadofx.*
 
 class ProjectFragment: Fragment("Project") {
     override val root = VBox()
     val listView: ListView<ProjectItem> by param()
 
-    private var titleField by singleAssign<TextField>()
-    private var identifierField by singleAssign<TextField>()
-    private var sortField by singleAssign<TextField>()
-    private var pathField by singleAssign<TextField>()
-    private var versificationField by singleAssign<TextField>()
-    private var categoryField by singleAssign<TextField>()
+    private val model = ProjectItemModel(SimpleObjectProperty(ProjectItem()))
 
     init {
         with(root) {
@@ -28,25 +24,32 @@ class ProjectFragment: Fragment("Project") {
                 label("Title:") {
                     addClass(Styles.boldLabel)
                 }
-                titleField = textfield {
+                textfield(model.title) {
                     addClass(Styles.addItemRoot)
-                }
+                }.required()
             }
             vbox {
                 label("Identifier:") {
                     addClass(Styles.boldLabel)
                 }
-                identifierField = textfield {
+                textfield(model.identifier) {
                     addClass(Styles.addItemRoot)
-                }
+                }.required()
             }
             vbox {
                 label("Sort:") {
                     addClass(Styles.boldLabel)
                 }
-                sortField = textfield {
+                textfield(model.sort) {
                     addClass(Styles.addItemRoot)
                     filterInput { it.controlNewText.isInt() }
+                    validator {
+                        if ((it?.matches("^(6[0-6]|[1-5][0-9]|[1-9])$".toRegex()))!!.not()) {
+                            error("This value should be from 1 to 66")
+                        } else {
+                            null
+                        }
+                    }
                 }
             }
 
@@ -54,57 +57,36 @@ class ProjectFragment: Fragment("Project") {
                 label("Versification:") {
                     addClass(Styles.boldLabel)
                 }
-                versificationField = textfield {
+                textfield(model.versification) {
                     addClass(Styles.addItemRoot)
-                }
+                }.required()
             }
             vbox {
                 label("Path:") {
                     addClass(Styles.boldLabel)
                 }
-                pathField = textfield {
+                textfield(model.path) {
                     addClass(Styles.addItemRoot)
-                }
+                }.required()
             }
             vbox {
                 label("Category:") {
                     addClass(Styles.boldLabel)
                 }
-                categoryField = textfield {
+                textfield(model.category) {
                     addClass(Styles.addItemRoot)
-                }
+                }.required()
             }
 
             button("Add") {
                 vboxConstraints {
                     padding = insets(15.0, 7.0)
                 }
+                enableWhen(model.valid)
                 action {
-                    if (titleField.text.trim().isNotEmpty()
-                            and identifierField.text.trim().isNotEmpty()
-                            and sortField.text.trim().isNotEmpty()
-                            and (sortField.text.trim().toInt() <= 66)
-                            and versificationField.text.trim().isNotEmpty()
-                            and pathField.text.trim().isNotEmpty()
-                            and categoryField.text.trim().isNotEmpty()) {
-
-                        listView.items.add(ProjectItem(
-                                titleField.text.trim(),
-                                versificationField.text.trim(),
-                                identifierField.text.trim(),
-                                sortField.text.trim().toInt(),
-                                pathField.text.trim(),
-                                categoryField.text.trim()))
-
-                        titleField.clear()
-                        versificationField.clear()
-                        identifierField.clear()
-                        sortField.clear()
-                        pathField.clear()
-                        categoryField.clear()
-
-                        close()
-                    }
+                    model.commit()
+                    listView.items.add(model.item)
+                    close()
                 }
             }
         }

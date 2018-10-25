@@ -22,8 +22,10 @@ class RelationFragment: Fragment("Relation") {
                 addClass(Styles.addItemRoot)
                 promptText = "Relation"
                 action {
-                    listView.items.add(SimpleStringProperty(text.trim()))
-                    clear()
+                    if (text.trim().isNotEmpty()) {
+                        listView.items.add(SimpleStringProperty(text.trim()))
+                        clear()
+                    }
                 }
             }
 

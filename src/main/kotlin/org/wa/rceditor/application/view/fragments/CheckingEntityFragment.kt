@@ -18,11 +18,13 @@ class CheckingEntityFragment: Fragment("Checking Entity") {
             padding = insets(5.0)
             spacing = 5.0
 
-            textfield {
+            textfield{
                 addClass(Styles.addItemRoot)
                 action {
-                    listView.items.add(SimpleStringProperty(text.trim()))
-                    clear()
+                    if (text.trim().isNotEmpty()) {
+                        listView.items.add(SimpleStringProperty(text.trim()))
+                        clear()
+                    }
                 }
             }
 

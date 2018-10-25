@@ -112,6 +112,7 @@ class MainViewModel: ViewModel() {
                     .subscribe {
                         container = it
                         clearViewData()
+                        clearDecorators()
                         directoryLoaded = true
                     }
         }
@@ -134,11 +135,13 @@ class MainViewModel: ViewModel() {
                         clearViewData()
                         directoryLoaded = true
                         setViewData()
+                        clearDecorators()
                     }
         }
     }
 
     fun handleSaveDocumentSelected() {
+        validate()
         saveResourceContainer()
     }
 
@@ -221,11 +224,11 @@ class MainViewModel: ViewModel() {
                         }
             } else {
                 showPopup(DialogFragment.TYPE.ERROR,
-                        "The Resource Container has not been saved! Check the data filled in properly.")
+                        "The Resource Container has not been saved! Make sure the data filled in properly.")
             }
         } catch (e: Exception) {
             showPopup(DialogFragment.TYPE.ERROR,
-                    "The Resource Container has not been saved! Check the data filled in properly.")
+                    "The Resource Container has not been saved! Make sure the data filled in properly.")
         }
     }
 

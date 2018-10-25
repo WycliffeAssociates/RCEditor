@@ -4,7 +4,7 @@ import javafx.beans.property.ObjectProperty
 import org.wycliffeassociates.resourcecontainer.entity.Source
 import tornadofx.*
 
-class SourceItem(identifier: String, language: String, version: String) {
+class SourceItem(identifier: String = "", language: String = "", version: String = "") {
     private var identifier: String by property(identifier)
     val identifierProperty = getProperty(SourceItem::identifier)
 

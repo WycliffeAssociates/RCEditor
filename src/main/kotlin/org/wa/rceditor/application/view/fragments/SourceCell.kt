@@ -22,8 +22,7 @@ class SourceCell: ListCellFragment<SourceItem>() {
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }
             action {
-                source.commit()
-                commitEdit(item)
+                source.commit { commitEdit(item) }
             }
             promptText = "Identifier"
             required()
@@ -32,8 +31,7 @@ class SourceCell: ListCellFragment<SourceItem>() {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
             action {
-                source.commit()
-                commitEdit(item)
+                source.commit { commitEdit(item) }
             }
             promptText = "Language"
             required()
@@ -42,8 +40,7 @@ class SourceCell: ListCellFragment<SourceItem>() {
             hgrow = Priority.ALWAYS
             removeWhen { editingProperty.not() }
             action {
-                source.commit()
-                commitEdit(item)
+                source.commit { commitEdit(item) }
             }
             promptText = "Version"
             required()

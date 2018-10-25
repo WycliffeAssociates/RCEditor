@@ -7,12 +7,12 @@ import tornadofx.*
 import java.util.*
 
 class ProjectItem(
-        title: String,
-        versification: String,
-        identifier: String,
-        sort: Int,
-        path: String,
-        category: String) {
+        title: String = "",
+        versification: String = "",
+        identifier: String = "",
+        sort: Int = 1,
+        path: String = "",
+        category: String = "") {
 
     private var title: String by property(title)
     val titleProperty = getProperty(ProjectItem::title)
