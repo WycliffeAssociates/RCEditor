@@ -183,50 +183,45 @@ class MainViewModel: ViewModel() {
     }
 
     fun saveResourceContainer() {
-        try {
-            container.manifest.dublinCore.conformsTo = conformsto
-            container.manifest.dublinCore.creator = creator
-            container.manifest.dublinCore.description = description
-            container.manifest.dublinCore.format = format
-            container.manifest.dublinCore.identifier = identifier
-            container.manifest.dublinCore.issued = issued.toString()
-            container.manifest.dublinCore.modified = modified.toString()
-            container.manifest.dublinCore.language.direction = languageDirection
-            container.manifest.dublinCore.language.identifier = languageIdentifier
-            container.manifest.dublinCore.language.title = languageTitle
-            container.manifest.dublinCore.publisher = publisher
-            container.manifest.dublinCore.rights = rights
-            container.manifest.dublinCore.subject = subject
-            container.manifest.dublinCore.title = title
-            container.manifest.dublinCore.type = type
-            container.manifest.dublinCore.version = version
-            container.manifest.checking.checkingLevel = checkingLevel
+        container.manifest.dublinCore.conformsTo = conformsto
+        container.manifest.dublinCore.creator = creator
+        container.manifest.dublinCore.description = description
+        container.manifest.dublinCore.format = format
+        container.manifest.dublinCore.identifier = identifier
+        container.manifest.dublinCore.issued = issued.toString()
+        container.manifest.dublinCore.modified = modified.toString()
+        container.manifest.dublinCore.language.direction = languageDirection
+        container.manifest.dublinCore.language.identifier = languageIdentifier
+        container.manifest.dublinCore.language.title = languageTitle
+        container.manifest.dublinCore.publisher = publisher
+        container.manifest.dublinCore.rights = rights
+        container.manifest.dublinCore.subject = subject
+        container.manifest.dublinCore.title = title
+        container.manifest.dublinCore.type = type
+        container.manifest.dublinCore.version = version
+        container.manifest.checking.checkingLevel = checkingLevel
 
-            container.manifest.dublinCore.contributor = contributors.toMutableList()
-            container.manifest.dublinCore.relation = relations.toMutableList()
-            container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
-            container.manifest.checking.checkingEntity = checkingEntities.toList()
-            container.manifest.projects = projects.map { it.toProject() }.toList()
+        container.manifest.dublinCore.contributor = contributors.toMutableList()
+        container.manifest.dublinCore.relation = relations.toMutableList()
+        container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
+        container.manifest.checking.checkingEntity = checkingEntities.toList()
+        container.manifest.projects = projects.map { it.toProject() }.toList()
 
-            if (ValidateResourceContainer().validate(container)) {
-                processing = true
-                ResourceContainer.save(container)
-                        .observeOn(JavaFxScheduler.platform())
-                        .subscribeOn(Schedulers.io())
-                        .doOnError {
-                            showPopup(DialogFragment.TYPE.ERROR, it.toString())
-                        }
-                        .onErrorComplete()
-                        .doFinally { processing = false }
-                        .subscribe {
-                            showPopup(DialogFragment.TYPE.SUCCESS,
-                                    "The Resource Container has been successfully saved!")
-                        }
-            } else {
-                showPopup(DialogFragment.TYPE.ERROR,
-                        "The Resource Container has not been saved! Make sure the data filled in properly.")
-            }
-        } catch (e: Exception) {
+        if (ValidateResourceContainer().validate(container)) {
+            processing = true
+            ResourceContainer.save(container)
+                    .observeOn(JavaFxScheduler.platform())
+                    .subscribeOn(Schedulers.io())
+                    .doOnError {
+                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                    }
+                    .onErrorComplete()
+                    .doFinally { processing = false }
+                    .subscribe {
+                        showPopup(DialogFragment.TYPE.SUCCESS,
+                                "The Resource Container has been successfully saved!")
+                    }
+        } else {
             showPopup(DialogFragment.TYPE.ERROR,
                     "The Resource Container has not been saved! Make sure the data filled in properly.")
         }
