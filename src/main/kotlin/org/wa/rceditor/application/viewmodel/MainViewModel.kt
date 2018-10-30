@@ -71,16 +71,16 @@ class MainViewModel: ViewModel() {
     private var checkingLevel: String by property()
     val checkingLevelProperty = getProperty(MainViewModel::checkingLevel)
 
-    private val contributors = SortedFilteredList<StringProperty>()
+    private val contributors = SortedFilteredList<String>()
     val contributorsProperty = SimpleListProperty(contributors)
 
-    private val relations = SortedFilteredList<StringProperty>()
+    private val relations = SortedFilteredList<String>()
     val relationsProperty = SimpleListProperty(relations)
 
     private val sources = SortedFilteredList<SourceItem>()
     val sourcesProperty = SimpleListProperty(sources)
 
-    private val checkingEntities = SortedFilteredList<StringProperty>()
+    private val checkingEntities = SortedFilteredList<String>()
     val checkingEntitiesProperty = SimpleListProperty(checkingEntities)
 
     private val projects = SortedFilteredList<ProjectItem>()
@@ -171,10 +171,10 @@ class MainViewModel: ViewModel() {
         version = container.manifest.dublinCore.version
         checkingLevel = container.manifest.checking.checkingLevel
 
-        contributors.addAll(container.manifest.dublinCore.contributor.map { SimpleStringProperty(it) })
-        relations.addAll(container.manifest.dublinCore.relation.map { SimpleStringProperty(it) })
+        contributors.addAll(container.manifest.dublinCore.contributor)
+        relations.addAll(container.manifest.dublinCore.relation)
         sources.addAll(container.manifest.dublinCore.source.map { SourceItem(it.identifier, it.language, it.version) })
-        checkingEntities.addAll(container.manifest.checking.checkingEntity.map { SimpleStringProperty(it) })
+        checkingEntities.addAll(container.manifest.checking.checkingEntity)
 
         projects.addAll(container.manifest.projects.map {
             ProjectItem(it.title, it.versification, it.identifier, it.sort, it.path,
@@ -202,10 +202,10 @@ class MainViewModel: ViewModel() {
             container.manifest.dublinCore.version = version
             container.manifest.checking.checkingLevel = checkingLevel
 
-            container.manifest.dublinCore.contributor = contributors.map { it.value }.toMutableList()
-            container.manifest.dublinCore.relation = relations.map { it.value }.toMutableList()
+            container.manifest.dublinCore.contributor = contributors.toMutableList()
+            container.manifest.dublinCore.relation = relations.toMutableList()
             container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
-            container.manifest.checking.checkingEntity = checkingEntities.map { it.value }.toList()
+            container.manifest.checking.checkingEntity = checkingEntities.toList()
             container.manifest.projects = projects.map { it.toProject() }.toList()
 
             if (ValidateResourceContainer().validate(container)) {

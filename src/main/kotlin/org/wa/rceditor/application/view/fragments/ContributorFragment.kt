@@ -1,7 +1,6 @@
 package org.wa.rceditor.application.view.fragments
 
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.StringProperty
+import javafx.event.EventHandler
 import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
@@ -10,7 +9,7 @@ import tornadofx.*
 
 class ContributorFragment: Fragment("Contributor") {
     override val root = VBox()
-    var listView: ListView<StringProperty> by singleAssign()
+    var listView: ListView<String> by singleAssign()
 
     init {
         with(root) {
@@ -23,7 +22,7 @@ class ContributorFragment: Fragment("Contributor") {
                 promptText = "Contributor name"
                 action {
                     if (text.trim().isNotEmpty()) {
-                        listView.items.add(SimpleStringProperty(text.trim()))
+                        listView.items.add(text.trim())
                         clear()
                     }
                 }
@@ -32,6 +31,9 @@ class ContributorFragment: Fragment("Contributor") {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(StringCell::class)
+                setOnEditCommit {
+                    items[it.index] = it.newValue
+                }
             }
         }
     }

@@ -1,7 +1,6 @@
 package org.wa.rceditor.application.view.fragments
 
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.StringProperty
+import javafx.event.EventHandler
 import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
@@ -10,7 +9,7 @@ import tornadofx.*
 
 class RelationFragment: Fragment("Relation") {
     override val root = VBox()
-    var listView: ListView<StringProperty> by singleAssign()
+    var listView: ListView<String> by singleAssign()
 
     init {
         with(root) {
@@ -23,7 +22,7 @@ class RelationFragment: Fragment("Relation") {
                 promptText = "Relation"
                 action {
                     if (text.trim().isNotEmpty()) {
-                        listView.items.add(SimpleStringProperty(text.trim()))
+                        listView.items.add(text.trim())
                         clear()
                     }
                 }
@@ -33,6 +32,9 @@ class RelationFragment: Fragment("Relation") {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(StringCell::class)
+                onEditCommit = EventHandler<ListView.EditEvent<String>> {
+                    items[it.index] = it.newValue
+                }
             }
         }
     }
