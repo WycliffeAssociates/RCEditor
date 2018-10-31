@@ -1,11 +1,13 @@
 package org.wa.rceditor.application.view.fragments
 
+import com.jfoenix.controls.JFXButton
+import com.jfoenix.controls.JFXListView
+import com.jfoenix.controls.JFXTextField
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.model.SourceItemModel
 import tornadofx.*
@@ -23,61 +25,65 @@ class SourceFragment: Fragment("Source") {
             spacing = 5.0
 
             hbox {
+                vboxConstraints {
+                    marginTop = 10.0
+                }
                 spacing = 5.0
-                vbox {
+
+                this += JFXTextField().apply {
                     hgrow = Priority.ALWAYS
-                    label("Identifier:") {
-                        addClass(Styles.boldLabel)
-                    }
-                    textfield(model.identifier) {
-                        addClass(Styles.addItemRoot)
-                        required()
-                    }
+                    bind(model.identifier)
+                    addClass(Styles.addItemRoot)
+                    required()
+
+                    promptText = "Identifier"
+                    isLabelFloat = true
+
+                    action { commitAll() }
                 }
 
-                vbox {
+                this += JFXTextField().apply {
                     hgrow = Priority.ALWAYS
-                    label("Language:") {
-                        addClass(Styles.boldLabel)
-                    }
-                    textfield(model.language) {
-                        addClass(Styles.addItemRoot)
-                        required()
-                    }
+                    bind(model.language)
+                    addClass(Styles.addItemRoot)
+                    required()
+
+                    promptText = "Language"
+                    isLabelFloat = true
+
+                    action { commitAll() }
                 }
 
-                vbox {
+                this += JFXTextField().apply {
                     hgrow = Priority.ALWAYS
-                    label("Version:") {
-                        addClass(Styles.boldLabel)
-                    }
-                    textfield(model.version) {
-                        addClass(Styles.addItemRoot)
-                        required()
-                    }
-                }
+                    bind(model.version)
+                    addClass(Styles.addItemRoot)
+                    required()
 
-                button("Add") {
-                    hgrow = Priority.ALWAYS
-                    hboxConstraints {
-                        marginTop = 15.0
-                        padding = insets(15.0, 7.0)
-                    }
-                    enableWhen(model.valid)
-                    action {
-                        model.commit()
-                        listView.items.add(model.item)
-                        model.item = SourceItem()
-                        model.clearDecorators()
-                    }
+                    promptText = "Version"
+                    isLabelFloat = true
+
+                    action { commitAll() }
                 }
             }
 
-            listView = listview {
+            this += JFXListView<SourceItem>().apply {
+                vboxConstraints { marginTop = 10.0 }
+                minHeight = 400.0
+                listView = this
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(SourceCell::class)
             }
+        }
+    }
+
+    fun commitAll() {
+        if (model.isValid) {
+            model.commit()
+            listView.items.add(model.item)
+            model.item = SourceItem()
+            model.clearDecorators()
         }
     }
 }

@@ -141,8 +141,13 @@ class MainViewModel: ViewModel() {
     }
 
     fun handleSaveDocumentSelected() {
-        validate()
-        saveResourceContainer()
+        try {
+            validate()
+            saveResourceContainer()
+        } catch (e: UninitializedPropertyAccessException) {
+            showPopup(DialogFragment.TYPE.ERROR,
+                    "First create a new resource container or open an existing one")
+        }
     }
 
     fun handleAppQuit() {

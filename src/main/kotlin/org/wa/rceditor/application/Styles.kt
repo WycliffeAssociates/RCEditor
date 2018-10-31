@@ -1,49 +1,58 @@
 package org.wa.rceditor.application
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
+import de.jensd.fx.glyphs.materialicons.MaterialIcon
+import de.jensd.fx.glyphs.materialicons.MaterialIconView
 import javafx.geometry.Pos
+import javafx.scene.Cursor
+import javafx.scene.effect.DropShadow
+import javafx.scene.effect.Effect
 import javafx.scene.paint.Color
+import javafx.scene.shape.StrokeType
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
 class Styles : Stylesheet() {
     companion object {
-        val promptColor by cssproperty<Color>("-fx-prompt-text-fill")
-
         val heading by cssclass()
-        val prompt by cssclass()
         val itemRoot by cssclass()
         val closeIcon by cssclass()
         val addItemRoot by cssclass()
         val boldLabel by cssclass()
         val menuIcon by cssclass()
+        val addIcon by cssclass()
+        val menuButton by cssclass()
+        val addButton by cssclass()
 
         val contentLabel by cssid()
 
-        fun closeIcon() = FontAwesomeIconView(FontAwesomeIcon.CLOSE).apply {
+        fun closeIcon() = MaterialIconView(MaterialIcon.CLOSE).apply {
             glyphSize = 22
             addClass(closeIcon)
         }
 
-        fun newFileIcon() = FontAwesomeIconView(FontAwesomeIcon.FILE_ALT).apply {
-            glyphSize = 22
+        fun newFileIcon() = MaterialIconView(MaterialIcon.CREATE_NEW_FOLDER).apply {
+            glyphSize = 32
             addClass(menuIcon)
         }
 
-        fun openFileIcon() = FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN_ALT).apply {
-            glyphSize = 22
+        fun openFileIcon() = MaterialIconView(MaterialIcon.FOLDER_OPEN).apply {
+            glyphSize = 32
             addClass(menuIcon)
         }
 
-        fun saveFileIcon() = FontAwesomeIconView(FontAwesomeIcon.SAVE).apply {
-            glyphSize = 22
+        fun saveFileIcon() = MaterialIconView(MaterialIcon.SAVE).apply {
+            glyphSize = 32
             addClass(menuIcon)
         }
 
-        fun quitIcon() = FontAwesomeIconView(FontAwesomeIcon.SIGN_OUT).apply {
-            glyphSize = 22
+        fun quitIcon() = MaterialIconView(MaterialIcon.EXIT_TO_APP).apply {
+            glyphSize = 32
             addClass(menuIcon)
+        }
+
+        fun addIcon() = MaterialIconView(MaterialIcon.ADD).apply {
+            glyphSize = 32
+            addClass(addIcon)
         }
     }
 
@@ -53,22 +62,38 @@ class Styles : Stylesheet() {
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
         }
-        prompt {
-            promptColor.value = c("#622")
-        }
         closeIcon {
-            fill = c("#cc9a9a")
+            fill = c("#cc5053")
+            fontWeight = FontWeight.BOLD
+            cursor = Cursor.HAND
 
             and(hover) {
-                fill = c("#af5b5e")
+                fill = c("#af0100")
             }
         }
         menuIcon {
             fill = c("#000")
+            cursor = Cursor.HAND
 
             and(hover) {
                 fill = c("#f00")
             }
+        }
+        menuButton {
+            cursor = Cursor.HAND
+        }
+        addIcon {
+            fill = c("#fff")
+        }
+        addButton {
+            backgroundColor += c("#94008B")
+            backgroundRadius += box(25.px)
+            borderRadius += box(25.px)
+            minHeight = 50.px
+            minWidth = 50.px
+            maxHeight = 50.px
+            maxWidth = 50.px
+            cursor = Cursor.HAND
         }
         itemRoot {
             padding = box(8.px)
@@ -90,5 +115,13 @@ class Styles : Stylesheet() {
         boldLabel {
             fontWeight = FontWeight.BOLD
         }
+        tabHeaderBackground {
+            backgroundColor += c("#94008B")
+        }
+        /*listCell {
+            and(selected) {
+                backgroundColor += c("#94008B")
+            }
+        }*/
     }
 }

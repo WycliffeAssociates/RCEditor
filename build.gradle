@@ -38,7 +38,10 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxkotlin:2.2.0"
     implementation "com.github.thomasnield:rxkotlinfx:2.2.2"
 
-    implementation 'de.jensd:fontawesomefx:8.9'
+    implementation "com.jfoenix:jfoenix:8.0.7"
+
+    implementation "de.jensd:fontawesomefx-commons:8.15"
+    implementation "de.jensd:fontawesomefx-materialicons:2.2.0-5"
 
     implementation "com.github.WycliffeAssociates:kotlin-resource-container:-SNAPSHOT"
 

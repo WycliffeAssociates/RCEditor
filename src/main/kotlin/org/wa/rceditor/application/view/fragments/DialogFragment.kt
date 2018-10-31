@@ -1,5 +1,6 @@
 package org.wa.rceditor.application.view.fragments
 
+import com.jfoenix.controls.JFXButton
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextAlignment
@@ -36,7 +37,7 @@ class DialogFragment: Fragment() {
 
         separator()
 
-        button("OK") {
+        this += JFXButton("OK").apply {
             vboxConstraints {
                 padding = insets(20.0, 5.0)
                 marginTop = 10.0
