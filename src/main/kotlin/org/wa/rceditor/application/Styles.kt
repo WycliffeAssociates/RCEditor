@@ -22,6 +22,7 @@ class Styles : Stylesheet() {
         val addIcon by cssclass()
         val menuButton by cssclass()
         val addButton by cssclass()
+        val dialogBody by cssclass("jfx-layout-body")
 
         val contentLabel by cssid()
 
@@ -108,15 +109,20 @@ class Styles : Stylesheet() {
         }
         addItemRoot {
             padding = box(.5.em)
-            textField {
-                prefWidth = 200.px
-            }
         }
         boldLabel {
             fontWeight = FontWeight.BOLD
         }
         tabHeaderBackground {
             backgroundColor += c("#94008B")
+        }
+        dialogBody {
+            padding = box(10.px)
+            prefWidth = 500.px
+
+            label {
+                textFill = c("#000")
+            }
         }
         /*listCell {
             and(selected) {

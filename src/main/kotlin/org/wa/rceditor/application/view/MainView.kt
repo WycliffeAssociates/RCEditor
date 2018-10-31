@@ -1,12 +1,11 @@
 package org.wa.rceditor.application.app
 
 import com.jfoenix.controls.*
-import de.jensd.fx.glyphs.materialicons.MaterialIcon
-import de.jensd.fx.glyphs.materialicons.MaterialIconView
 import javafx.beans.binding.Bindings
 import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.StackPane
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.view.fragments.*
@@ -21,6 +20,7 @@ class MainView : View("Resource Container Editor") {
 
     private lateinit var tabPane: JFXTabPane
     private lateinit var projectListView: JFXListView<ProjectItem>
+    lateinit var stackPane: StackPane
 
     init {
         with(root) {
@@ -74,6 +74,7 @@ class MainView : View("Resource Container Editor") {
                     paddingHorizontal = 20.0
                 }
                 stackpane {
+                    stackPane = this
                     this += JFXTabPane().apply {
                         tabPane = this
                         tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
@@ -101,9 +102,23 @@ class MainView : View("Resource Container Editor") {
                                         field("Contributor") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    val sf = find<ContributorFragment>()
+                                                    JFXDialog().apply {
+                                                        dialogContainer = stackPane
+                                                        content = JFXDialogLayout().apply {
+                                                            setHeading(label("Contributor"))
+                                                            setBody(StringListDialog("Contributor name",
+                                                                    viewModel.contributorsProperty))
+                                                            setActions(JFXButton("Close").apply {
+                                                                action { close() }
+                                                            })
+                                                        }
+                                                        transitionType = JFXDialog.DialogTransition.LEFT
+                                                        isOverlayClose = false
+                                                    }.show()
+
+                                                    /*val sf = find<ContributorFragment>()
                                                     sf.listView.items = viewModel.contributorsProperty
-                                                    sf.openModal()
+                                                    sf.openModal()*/
                                                 }
                                             }
                                         }
@@ -192,9 +207,23 @@ class MainView : View("Resource Container Editor") {
                                         field("Relation") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    val sf = find<RelationFragment>()
+                                                    JFXDialog().apply {
+                                                        dialogContainer = stackPane
+                                                        content = JFXDialogLayout().apply {
+                                                            setHeading(label("Relation"))
+                                                            setBody(StringListDialog("Relation",
+                                                                    viewModel.relationsProperty))
+                                                            setActions(JFXButton("Close").apply {
+                                                                action { close() }
+                                                            })
+                                                        }
+                                                        transitionType = JFXDialog.DialogTransition.LEFT
+                                                        isOverlayClose = false
+                                                    }.show()
+
+                                                    /*val sf = find<RelationFragment>()
                                                     sf.listView.items = viewModel.relationsProperty
-                                                    sf.openModal()
+                                                    sf.openModal()*/
                                                 }
                                             }
                                         }
@@ -210,9 +239,22 @@ class MainView : View("Resource Container Editor") {
                                         field("Source") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    val sf = find<SourceFragment>()
+                                                    JFXDialog().apply {
+                                                        dialogContainer = stackPane
+                                                        content = JFXDialogLayout().apply {
+                                                            setHeading(label("Source"))
+                                                            setBody(SourceListDialog(viewModel.sourcesProperty))
+                                                            setActions(JFXButton("Close").apply {
+                                                                action { close() }
+                                                            })
+                                                        }
+                                                        transitionType = JFXDialog.DialogTransition.LEFT
+                                                        isOverlayClose = false
+                                                    }.show()
+
+                                                    /*val sf = find<SourceFragment>()
                                                     sf.listView.items = viewModel.sourcesProperty
-                                                    sf.openModal()
+                                                    sf.openModal()*/
                                                 }
                                             }
                                         }
@@ -258,9 +300,23 @@ class MainView : View("Resource Container Editor") {
                                         field("Checking Entity") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    val sf = find<CheckingEntityFragment>()
+                                                    JFXDialog().apply {
+                                                        dialogContainer = stackPane
+                                                        content = JFXDialogLayout().apply {
+                                                            setHeading(label("Checking Entity"))
+                                                            setBody(StringListDialog("Checking Entity",
+                                                                    viewModel.checkingEntitiesProperty))
+                                                            setActions(JFXButton("Close").apply {
+                                                                action { close() }
+                                                            })
+                                                        }
+                                                        transitionType = JFXDialog.DialogTransition.LEFT
+                                                        isOverlayClose = false
+                                                    }.show()
+
+                                                    /*val sf = find<CheckingEntityFragment>()
                                                     sf.listView.items = viewModel.checkingEntitiesProperty
-                                                    sf.openModal()
+                                                    sf.openModal()*/
                                                 }
                                             }
                                         }
@@ -302,7 +358,28 @@ class MainView : View("Resource Container Editor") {
                                     }
                                     addClass(Styles.addButton)
                                     action {
-                                        find<ProjectFragment>(mapOf(ProjectFragment::listView to projectListView)).openModal()
+                                        val dialog = JFXDialog()
+                                        val projectDialog = NewProjectDialog(projectListView, dialog)
+                                        dialog.apply {
+                                            dialogContainer = stackPane
+                                            content = JFXDialogLayout().apply {
+                                                setHeading(label("Project"))
+                                                setBody(projectDialog)
+                                                setActions(JFXButton("Add").apply {
+                                                    action {
+                                                        projectDialog.commitAll()
+                                                    }
+                                                }, JFXButton("Cancel").apply {
+                                                    action {
+                                                        close()
+                                                    }
+                                                })
+                                            }
+                                            transitionType = JFXDialog.DialogTransition.LEFT
+                                            isOverlayClose = false
+                                        }.show()
+
+                                        //find<ProjectFragment>(mapOf(ProjectFragment::listView to projectListView)).openModal()
                                     }
                                     visibleWhen {
                                         Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())
@@ -321,4 +398,3 @@ class MainView : View("Resource Container Editor") {
         }
     }
 }
-
