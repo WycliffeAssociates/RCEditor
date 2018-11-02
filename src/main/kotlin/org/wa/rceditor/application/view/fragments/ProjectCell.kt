@@ -1,23 +1,18 @@
 package org.wa.rceditor.application.view.fragments
 
+import com.jfoenix.controls.JFXTextField
 import javafx.scene.layout.Priority
-import javafx.util.converter.NumberStringConverter
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.ProjectItemModel
 import tornadofx.*
 
 class ProjectCell: ListCellFragment<ProjectItem>() {
-    private val project = ProjectItemModel(itemProperty)
+    private val model = ProjectItemModel(itemProperty)
 
     override val root = hbox {
         addClass(Styles.itemRoot)
-        label(project.title) {
-            textProperty().bind(
-                    stringBinding(project.title) {
-                        "${if(project.title.value != "") project.title.value else "-----"}"
-                    }
-            )
+        label(model.title) {
             setId(Styles.contentLabel)
             hgrow = Priority.ALWAYS
             useMaxSize = true
@@ -25,39 +20,54 @@ class ProjectCell: ListCellFragment<ProjectItem>() {
         }
         form {
             removeWhen { editingProperty.not() }
+            hgrow = Priority.ALWAYS
             fieldset {
-                field("Title") {
-                    textfield(project.title) {
+                spacing = 10.0
+                field {
+                    this += JFXTextField().apply {
                         hgrow = Priority.ALWAYS
+                        bind(model.title)
                         removeWhen { editingProperty.not() }
                         whenVisible { requestFocus() }
                         required()
                         action {
-                            project.commit { commitEdit(item) }
+                            model.commit { commitEdit(item) }
                         }
+
+                        promptText = "Title"
+                        isLabelFloat = true
                     }
                 }
-                field("Versification") {
-                    textfield(project.versification) {
+                field {
+                    this += JFXTextField().apply {
                         hgrow = Priority.ALWAYS
+                        bind(model.versification)
                         required()
                         action {
-                            project.commit { commitEdit(item) }
+                            model.commit { commitEdit(item) }
                         }
+
+                        promptText = "Versification"
+                        isLabelFloat = true
                     }
                 }
-                field("Identifier") {
-                    textfield(project.identifier) {
+                field {
+                    this += JFXTextField().apply {
                         hgrow = Priority.ALWAYS
+                        bind(model.identifier)
                         required()
                         action {
-                            project.commit { commitEdit(item) }
+                            model.commit { commitEdit(item) }
                         }
+
+                        promptText = "Identifier"
+                        isLabelFloat = true
                     }
                 }
-                field("Sort") {
-                    textfield(project.sort, NumberStringConverter()) {
+                field {
+                    this += JFXTextField().apply {
                         hgrow = Priority.ALWAYS
+                        bind(model.sort)
                         filterInput { it.controlNewText.isInt() }
                         validator {
                             if ((it?.matches("^(6[0-6]|[1-5][0-9]|[1-9])$".toRegex()))!!.not()) {
@@ -67,26 +77,37 @@ class ProjectCell: ListCellFragment<ProjectItem>() {
                             }
                         }
                         action {
-                            project.commit { commitEdit(item) }
+                            model.commit { commitEdit(item) }
                         }
+
+                        promptText = "Sort"
+                        isLabelFloat = true
                     }
                 }
-                field("Path") {
-                    textfield(project.path) {
+                field {
+                    this += JFXTextField().apply {
                         hgrow = Priority.ALWAYS
+                        bind(model.path)
                         required()
                         action {
-                            project.commit { commitEdit(item) }
+                            model.commit { commitEdit(item) }
                         }
+
+                        promptText = "Path"
+                        isLabelFloat = true
                     }
                 }
-                field("Category") {
-                    textfield(project.category) {
+                field {
+                    this += JFXTextField().apply {
                         hgrow = Priority.ALWAYS
+                        bind(model.category)
                         required()
                         action {
-                            project.commit { commitEdit(item) }
+                            model.commit { commitEdit(item) }
                         }
+
+                        promptText = "Category"
+                        isLabelFloat = true
                     }
                 }
             }

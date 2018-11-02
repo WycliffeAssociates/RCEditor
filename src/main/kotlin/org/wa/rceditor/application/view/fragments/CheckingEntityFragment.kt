@@ -1,5 +1,7 @@
 package org.wa.rceditor.application.view.fragments
 
+import com.jfoenix.controls.JFXListView
+import com.jfoenix.controls.JFXTextField
 import javafx.event.EventHandler
 import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
@@ -9,7 +11,7 @@ import tornadofx.*
 
 class CheckingEntityFragment: Fragment("Checking Entity") {
     override val root = VBox()
-    var listView: ListView<String> by singleAssign()
+    var listView: JFXListView<String> by singleAssign()
 
     init {
         with(root) {
@@ -17,8 +19,11 @@ class CheckingEntityFragment: Fragment("Checking Entity") {
             padding = insets(5.0)
             spacing = 5.0
 
-            textfield{
+            this += JFXTextField().apply{
+                vboxConstraints { marginTop = 10.0 }
                 addClass(Styles.addItemRoot)
+                promptText = "Checking Entity"
+                isLabelFloat = true
                 action {
                     if (text.trim().isNotEmpty()) {
                         listView.items.add(text.trim())
@@ -27,7 +32,10 @@ class CheckingEntityFragment: Fragment("Checking Entity") {
                 }
             }
 
-            listView = listview {
+            this += JFXListView<String>().apply {
+                vboxConstraints { marginTop = 10.0 }
+                minHeight = 400.0
+                listView = this
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(StringCell::class)

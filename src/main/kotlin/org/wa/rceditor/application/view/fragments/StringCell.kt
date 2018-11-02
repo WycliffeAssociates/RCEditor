@@ -1,5 +1,6 @@
 package org.wa.rceditor.application.view.fragments
 
+import com.jfoenix.controls.JFXTextField
 import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
 import tornadofx.*
@@ -14,10 +15,12 @@ class StringCell: ListCellFragment<String>() {
             useMaxSize = true
             removeWhen { editingProperty }
         }
-        textfield(itemProperty) {
+        this += JFXTextField().apply {
             hgrow = Priority.ALWAYS
+            bind(itemProperty)
             removeWhen { editingProperty.not() }
             whenVisible { requestFocus() }
+
             action {
                 if (text.trim().isNotEmpty()) {
                     commitEdit(item)

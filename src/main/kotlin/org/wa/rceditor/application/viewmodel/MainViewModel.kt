@@ -1,13 +1,20 @@
 package org.wa.rceditor.application.viewmodel
 
+import com.jfoenix.controls.JFXButton
+import com.jfoenix.controls.JFXDialog
+import com.jfoenix.controls.JFXDialogLayout
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import javafx.scene.layout.StackPane
+import org.wa.rceditor.application.app.MainView
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.view.fragments.DialogFragment
+import org.wa.rceditor.application.view.fragments.MessageDialog
+import org.wa.rceditor.application.view.fragments.StringListDialog
 import org.wa.rceditor.domain.ValidateResourceContainer
 import org.wa.rceditor.domain.create
 import org.wa.rceditor.domain.open
@@ -19,7 +26,6 @@ import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
 
 class MainViewModel: ViewModel() {
-
     private var conformsto: String by property()
     val conformstoProperty = getProperty(MainViewModel::conformsto)
 
@@ -94,7 +100,6 @@ class MainViewModel: ViewModel() {
 
     lateinit var container: ResourceContainer
 
-
     // ------------- Handlers ---------------- //
 
     fun handleNewDocumentSelected() {
@@ -106,7 +111,7 @@ class MainViewModel: ViewModel() {
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                        showPopup(MessageDialog.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
                     .doFinally { processing = false }
@@ -128,7 +133,7 @@ class MainViewModel: ViewModel() {
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                        showPopup(MessageDialog.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
                     .doFinally { processing = false }
@@ -143,8 +148,13 @@ class MainViewModel: ViewModel() {
     }
 
     fun handleSaveDocumentSelected() {
-        validate()
-        saveResourceContainer()
+        try {
+            validate()
+            saveResourceContainer()
+        } catch (e: UninitializedPropertyAccessException) {
+            showPopup(MessageDialog.TYPE.ERROR,
+                    "First create a new resource container or open an existing one")
+        }
     }
 
     fun handleAppQuit() {
@@ -215,16 +225,16 @@ class MainViewModel: ViewModel() {
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        showPopup(DialogFragment.TYPE.ERROR, it.toString())
+                        showPopup(MessageDialog.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
                     .doFinally { processing = false }
                     .subscribe {
-                        showPopup(DialogFragment.TYPE.SUCCESS,
+                        showPopup(MessageDialog.TYPE.SUCCESS,
                                 "The Resource Container has been successfully saved!")
                     }
         } else {
-            showPopup(DialogFragment.TYPE.ERROR,
+            showPopup(MessageDialog.TYPE.ERROR,
                     "The Resource Container has not been saved! Make sure the data filled in properly.")
         }
     }
@@ -254,12 +264,17 @@ class MainViewModel: ViewModel() {
         projects.clear()
     }
 
-    fun showPopup(type: DialogFragment.TYPE?, message: String?) {
+    /*fun showPopup(type: DialogFragment.TYPE?, message: String?) {
         find<DialogFragment>(
                 mapOf(
                         DialogFragment::type to type,
                         DialogFragment::message to message
                 )
         ).openModal()
+    }*/
+
+    fun showPopup(type: MessageDialog.TYPE, message: String) {
+        val mainView = primaryStage.scene.findUIComponents().first() as MainView
+        MessageDialog(type, message).show(mainView.stackPane)
     }
 }

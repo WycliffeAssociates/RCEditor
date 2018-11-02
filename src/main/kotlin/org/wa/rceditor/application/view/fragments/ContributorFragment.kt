@@ -1,7 +1,7 @@
 package org.wa.rceditor.application.view.fragments
 
-import javafx.event.EventHandler
-import javafx.scene.control.ListView
+import com.jfoenix.controls.JFXListView
+import com.jfoenix.controls.JFXTextField
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
@@ -9,7 +9,7 @@ import tornadofx.*
 
 class ContributorFragment: Fragment("Contributor") {
     override val root = VBox()
-    var listView: ListView<String> by singleAssign()
+    var listView: JFXListView<String> by singleAssign()
 
     init {
         with(root) {
@@ -17,9 +17,11 @@ class ContributorFragment: Fragment("Contributor") {
             padding = insets(5.0)
             spacing = 5.0
 
-            textfield {
+            this += JFXTextField().apply {
+                vboxConstraints { marginTop = 10.0 }
                 addClass(Styles.addItemRoot)
                 promptText = "Contributor name"
+                isLabelFloat = true
                 action {
                     if (text.trim().isNotEmpty()) {
                         listView.items.add(text.trim())
@@ -27,7 +29,10 @@ class ContributorFragment: Fragment("Contributor") {
                     }
                 }
             }
-            listView = listview {
+            this += JFXListView<String>().apply {
+                vboxConstraints { marginTop = 10.0 }
+                minHeight = 400.0
+                listView = this
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(StringCell::class)
