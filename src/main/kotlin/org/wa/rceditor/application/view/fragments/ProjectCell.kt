@@ -5,11 +5,9 @@ import javafx.util.converter.NumberStringConverter
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.ProjectItemModel
-import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
 class ProjectCell: ListCellFragment<ProjectItem>() {
-    private val viewModel by inject<MainViewModel>()
     private val project = ProjectItemModel(itemProperty)
 
     override val root = hbox {
@@ -33,38 +31,62 @@ class ProjectCell: ListCellFragment<ProjectItem>() {
                         hgrow = Priority.ALWAYS
                         removeWhen { editingProperty.not() }
                         whenVisible { requestFocus() }
-                        action { commitEdit(item) }
+                        required()
+                        action {
+                            project.commit { commitEdit(item) }
+                        }
                     }
                 }
                 field("Versification") {
                     textfield(project.versification) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        required()
+                        action {
+                            project.commit { commitEdit(item) }
+                        }
                     }
                 }
                 field("Identifier") {
                     textfield(project.identifier) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        required()
+                        action {
+                            project.commit { commitEdit(item) }
+                        }
                     }
                 }
                 field("Sort") {
                     textfield(project.sort, NumberStringConverter()) {
-                        filterInput { it.controlNewText.isInt() }
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        filterInput { it.controlNewText.isInt() }
+                        validator {
+                            if ((it?.matches("^(6[0-6]|[1-5][0-9]|[1-9])$".toRegex()))!!.not()) {
+                                error("This value should be from 1 to 66")
+                            } else {
+                                null
+                            }
+                        }
+                        action {
+                            project.commit { commitEdit(item) }
+                        }
                     }
                 }
                 field("Path") {
                     textfield(project.path) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        required()
+                        action {
+                            project.commit { commitEdit(item) }
+                        }
                     }
                 }
                 field("Category") {
                     textfield(project.category) {
                         hgrow = Priority.ALWAYS
-                        action { commitEdit(item) }
+                        required()
+                        action {
+                            project.commit { commitEdit(item) }
+                        }
                     }
                 }
             }
@@ -72,7 +94,7 @@ class ProjectCell: ListCellFragment<ProjectItem>() {
 
         button(graphic = Styles.closeIcon()) {
             removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { viewModel.removeProject(item) }
+            action { cell?.listView?.items?.remove(item) }
         }
     }
 }

@@ -2,9 +2,11 @@ package org.wa.rceditor.application.app
 
 import javafx.beans.binding.Bindings
 import javafx.geometry.Pos
+import javafx.scene.control.ListView
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import org.wa.rceditor.application.Styles
+import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
@@ -16,6 +18,7 @@ class MainView : View("Resource Container Editor") {
     private val viewModel by inject<MainViewModel>()
 
     private lateinit var tabPane: TabPane
+    private lateinit var projectListView: ListView<ProjectItem>
 
     init {
         with(root) {
@@ -65,7 +68,8 @@ class MainView : View("Resource Container Editor") {
                     paddingHorizontal = 20.0
                 }
                 stackpane {
-                    tabPane = tabpane {
+                    tabpane {
+                        tabPane = this
                         visibleWhen { viewModel.directoryLoadedProperty }
                         tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
                         tab("Core") {
@@ -74,101 +78,123 @@ class MainView : View("Resource Container Editor") {
                                     field("Conformsto") {
                                         textfield {
                                             bind(viewModel.conformstoProperty)
+                                            required()
                                         }
                                     }
                                     field("Contributor") {
                                         button("Edit") {
                                             action {
-                                                find<ContributorFragment>().openModal()
+                                                val sf = find<ContributorFragment>()
+                                                sf.listView.items = viewModel.contributorsProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
                                     field("Creator") {
                                         textfield {
                                             bind(viewModel.creatorProperty)
+                                            required()
                                         }
                                     }
                                     field("Description") {
                                         textfield {
                                             bind(viewModel.descriptionProperty)
+                                            required()
                                         }
                                     }
                                     field("Format") {
                                         textfield {
                                             bind(viewModel.formatProperty)
+                                            required()
                                         }
                                     }
                                     field("Identifier") {
                                         textfield {
                                             bind(viewModel.identifierProperty)
+                                            required()
                                         }
                                     }
                                     field("Issued") {
                                         datepicker {
                                             bind(viewModel.issuedProperty)
+                                            required()
                                         }
                                     }
                                     field("Modified") {
                                         datepicker {
                                             bind(viewModel.modifiedProperty)
+                                            required()
                                         }
                                     }
                                     field("Language") {
                                         textfield {
                                             promptText = "Direction"
                                             bind(viewModel.languageDirectionProperty)
+                                            required()
                                         }
                                         textfield {
                                             promptText = "Identifier"
                                             bind(viewModel.languageIdentifierProperty)
+                                            required()
                                         }
                                         textfield {
                                             promptText = "Title"
                                             bind(viewModel.languageTitleProperty)
+                                            required()
                                         }
                                     }
                                     field("Publisher") {
                                         textfield {
                                             bind(viewModel.publisherProperty)
+                                            required()
                                         }
                                     }
                                     field("Relation") {
                                         button("Edit") {
                                             action {
-                                                find<RelationFragment>().openModal()
+                                                val sf = find<RelationFragment>()
+                                                sf.listView.items = viewModel.relationsProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
                                     field("Rights") {
                                         textfield {
                                             bind(viewModel.rightsProperty)
+                                            required()
                                         }
                                     }
                                     field("Source") {
                                         button("Edit") {
                                             action {
-                                                find<SourceFragment>().openModal()
+                                                val sf = find<SourceFragment>()
+                                                sf.listView.items = viewModel.sourcesProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
                                     field("Subject") {
                                         textfield {
                                             bind(viewModel.subjectProperty)
+                                            required()
                                         }
                                     }
                                     field("Title") {
                                         textfield {
                                             bind(viewModel.titleProperty)
+                                            required()
                                         }
                                     }
                                     field("Type") {
                                         textfield {
                                             bind(viewModel.typeProperty)
+                                            required()
                                         }
                                     }
                                     field("Version") {
                                         textfield {
                                             bind(viewModel.versionProperty)
+                                            required()
                                         }
                                     }
                                 }
@@ -177,13 +203,16 @@ class MainView : View("Resource Container Editor") {
                                     field("Checking Entity") {
                                         button("Edit") {
                                             action {
-                                                find<CheckingEntityFragment>().openModal()
+                                                val sf = find<CheckingEntityFragment>()
+                                                sf.listView.items = viewModel.checkingEntitiesProperty
+                                                sf.openModal()
                                             }
                                         }
                                     }
                                     field("Checking Level") {
                                         textfield {
                                             bind(viewModel.checkingLevelProperty)
+                                            required()
                                         }
                                     }
                                 }
@@ -191,12 +220,17 @@ class MainView : View("Resource Container Editor") {
                         }
 
                         tab("Projects") {
-                            listview(viewModel.projects()) {
+                            listview(viewModel.projectsProperty.value) {
+                                projectListView = this
                                 paddingBottom = 5.0
                                 isEditable = true
                                 cellFragment(ProjectCell::class)
                             }
                         }
+                    }
+
+                    progressbar {
+                        visibleWhen { viewModel.processingProperty }
                     }
 
                     button("Add Project") {
@@ -206,7 +240,7 @@ class MainView : View("Resource Container Editor") {
                             marginRight = 5.0
                         }
                         action {
-                            find<ProjectFragment>().openModal()
+                            find<ProjectFragment>(mapOf(ProjectFragment::listView to projectListView)).openModal()
                         }
                         visibleWhen {
                             Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())

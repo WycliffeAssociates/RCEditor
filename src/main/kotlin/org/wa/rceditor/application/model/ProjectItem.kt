@@ -7,13 +7,13 @@ import tornadofx.*
 import java.util.*
 
 class ProjectItem(
-        title: String,
-        versification: String,
-        identifier: String,
-        sort: Int,
-        path: String,
-        category: String) {
-
+        title: String = "",
+        versification: String = "",
+        identifier: String = "",
+        sort: Int = 1,
+        path: String = "",
+        category: String = "") {
+  
     private var title: String by property(title)
     val titleProperty = getProperty(ProjectItem::title)
 
@@ -47,10 +47,10 @@ class ProjectItem(
 
 class ProjectItemModel(property: ObjectProperty<ProjectItem>) :
         ItemViewModel<ProjectItem>(itemProperty = property) {
-    val title = bind(autocommit = true) { item?.titleProperty }
-    val versification = bind(autocommit = true) { item?.versificationProperty }
-    val identifier = bind(autocommit = true) { item?.identifierProperty }
-    val sort = bind(autocommit = true) { item?.sortProperty }
-    val path = bind(autocommit = true) { item?.pathProperty }
-    val category = bind(autocommit = true) { item?.categoryProperty }
+    val title = bind { item?.titleProperty }
+    val versification = bind { item?.versificationProperty }
+    val identifier = bind { item?.identifierProperty }
+    val sort = bind { item?.sortProperty }
+    val path = bind { item?.pathProperty }
+    val category = bind { item?.categoryProperty }
 }

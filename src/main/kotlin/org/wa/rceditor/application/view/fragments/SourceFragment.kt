@@ -1,19 +1,20 @@
 package org.wa.rceditor.application.view.fragments
 
-import javafx.scene.control.TextField
+import javafx.beans.property.SimpleObjectProperty
+import javafx.scene.control.ListView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.viewmodel.MainViewModel
+import org.wa.rceditor.application.model.ProjectItem
+import org.wa.rceditor.application.model.SourceItem
+import org.wa.rceditor.application.model.SourceItemModel
 import tornadofx.*
 
 class SourceFragment: Fragment("Source") {
     override val root = VBox()
-    private val viewModel by inject<MainViewModel>()
+    var listView: ListView<SourceItem> by singleAssign()
 
-    private var identifierField by singleAssign<TextField>()
-    private var languageField by singleAssign<TextField>()
-    private var versionField by singleAssign<TextField>()
+    private val model = SourceItemModel(SimpleObjectProperty(SourceItem()))
 
     init {
         with(root) {
@@ -28,8 +29,9 @@ class SourceFragment: Fragment("Source") {
                     label("Identifier:") {
                         addClass(Styles.boldLabel)
                     }
-                    identifierField = textfield {
+                    textfield(model.identifier) {
                         addClass(Styles.addItemRoot)
+                        required()
                     }
                 }
 
@@ -38,8 +40,9 @@ class SourceFragment: Fragment("Source") {
                     label("Language:") {
                         addClass(Styles.boldLabel)
                     }
-                    languageField = textfield {
+                    textfield(model.language) {
                         addClass(Styles.addItemRoot)
+                        required()
                     }
                 }
 
@@ -48,8 +51,9 @@ class SourceFragment: Fragment("Source") {
                     label("Version:") {
                         addClass(Styles.boldLabel)
                     }
-                    versionField = textfield {
+                    textfield(model.version) {
                         addClass(Styles.addItemRoot)
+                        required()
                     }
                 }
 
@@ -59,24 +63,17 @@ class SourceFragment: Fragment("Source") {
                         marginTop = 15.0
                         padding = insets(15.0, 7.0)
                     }
+                    enableWhen(model.valid)
                     action {
-                        if (identifierField.text.trim().isNotEmpty()
-                                and languageField.text.trim().isNotEmpty()
-                                and versionField.text.trim().isNotEmpty()) {
-                            viewModel.addSource(
-                                    identifierField.text.trim(),
-                                    languageField.text.trim(),
-                                    versionField.text.trim()
-                            )
-                            identifierField.clear()
-                            languageField.clear()
-                            versionField.clear()
-                        }
+                        model.commit()
+                        listView.items.add(model.item)
+                        model.item = SourceItem()
+                        model.clearDecorators()
                     }
                 }
             }
 
-            listview(viewModel.sources()) {
+            listView = listview {
                 isEditable = true
                 vgrow = Priority.ALWAYS
                 cellFragment(SourceCell::class)

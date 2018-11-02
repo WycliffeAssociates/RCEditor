@@ -2,13 +2,13 @@ package org.wa.rceditor.application.viewmodel
 
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
+import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
-import javafx.collections.ObservableList
-import javafx.stage.FileChooser
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.view.fragments.DialogFragment
+import org.wa.rceditor.domain.ValidateResourceContainer
 import org.wa.rceditor.domain.create
 import org.wa.rceditor.domain.open
 import org.wa.rceditor.domain.save
@@ -71,33 +71,49 @@ class MainViewModel: ViewModel() {
     private var checkingLevel: String by property()
     val checkingLevelProperty = getProperty(MainViewModel::checkingLevel)
 
+    private val contributors = SortedFilteredList<String>()
+    val contributorsProperty = SimpleListProperty(contributors)
+
+    private val relations = SortedFilteredList<String>()
+    val relationsProperty = SimpleListProperty(relations)
+
+    private val sources = SortedFilteredList<SourceItem>()
+    val sourcesProperty = SimpleListProperty(sources)
+
+    private val checkingEntities = SortedFilteredList<String>()
+    val checkingEntitiesProperty = SimpleListProperty(checkingEntities)
+
+    private val projects = SortedFilteredList<ProjectItem>()
+    val projectsProperty = SimpleListProperty(projects)
+
     private var directoryLoaded: Boolean by property()
     val directoryLoadedProperty = getProperty(MainViewModel::directoryLoaded)
 
-    lateinit var container: ResourceContainer
+    private var processing: Boolean by property()
+    val processingProperty = getProperty(MainViewModel::processing)
 
-    private val contributors = SortedFilteredList<StringProperty>()
-    private val relations = SortedFilteredList<StringProperty>()
-    private val sources = SortedFilteredList<SourceItem>()
-    private val checkingEntities = SortedFilteredList<StringProperty>()
-    private val projects = SortedFilteredList<ProjectItem>()
+    lateinit var container: ResourceContainer
 
 
     // ------------- Handlers ---------------- //
 
     fun handleNewDocumentSelected() {
         chooseDirectory("Create Resource Container")?.let {
+            processing = true
+            directoryLoaded = false
+
             ResourceContainer.create(it)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        println(it.message)
                         showPopup(DialogFragment.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
+                    .doFinally { processing = false }
                     .subscribe {
                         container = it
                         clearViewData()
+                        clearDecorators()
                         directoryLoaded = true
                     }
         }
@@ -105,93 +121,38 @@ class MainViewModel: ViewModel() {
 
     fun handleOpenDirectorySelected() {
         chooseDirectory("Open Resource Container")?.let {
+            processing = true
+            directoryLoaded = false
+            
             ResourceContainer.open(it)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        println(it.message)
                         showPopup(DialogFragment.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
+                    .doFinally { processing = false }
                     .subscribe {
                         container = it
                         clearViewData()
                         directoryLoaded = true
                         setViewData()
+                        clearDecorators()
                     }
         }
     }
 
     fun handleSaveDocumentSelected() {
+        validate()
         saveResourceContainer()
     }
 
     fun handleAppQuit() {
-        exitProcess(-1)
+        exitProcess(0)
     }
 
 
     // ------------ Functions -------------- //
-
-    fun contributors(): ObservableList<StringProperty> {
-        return contributors
-    }
-
-    fun addContributor(text: String) {
-        contributors.add(SimpleStringProperty(text))
-    }
-
-    fun removeContributor(item: StringProperty) {
-        contributors.remove(item)
-    }
-
-    fun relations(): ObservableList<StringProperty> {
-        return relations
-    }
-
-    fun addRelation(text: String) {
-        relations.add(SimpleStringProperty(text))
-    }
-
-    fun removeRelation(item: StringProperty) {
-        relations.remove(item)
-    }
-
-    fun sources(): ObservableList<SourceItem> {
-        return sources
-    }
-
-    fun addSource(identifier: String, language: String, version: String) {
-        sources.add(SourceItem(identifier, language, version))
-    }
-
-    fun removeSource(item: SourceItem) {
-        sources.remove(item)
-    }
-
-    fun checkingEntities(): ObservableList<StringProperty> {
-        return checkingEntities
-    }
-
-    fun addCheckingEntity(text: String) {
-        checkingEntities.add(SimpleStringProperty(text))
-    }
-
-    fun removeCheckingEntity(item: StringProperty) {
-        checkingEntities.remove(item)
-    }
-
-    fun projects(): ObservableList<ProjectItem> {
-        return projects
-    }
-
-    fun addProject(title: String, versification: String, identifier: String, sort: Int, path: String, category: String) {
-        projects.add(ProjectItem(title, versification, identifier, sort, path, category))
-    }
-
-    fun removeProject(item: ProjectItem) {
-        projects.remove(item)
-    }
 
     fun setViewData() {
         conformsto = container.manifest.dublinCore.conformsTo
@@ -212,10 +173,10 @@ class MainViewModel: ViewModel() {
         version = container.manifest.dublinCore.version
         checkingLevel = container.manifest.checking.checkingLevel
 
-        contributors.addAll(container.manifest.dublinCore.contributor.map { SimpleStringProperty(it) })
-        relations.addAll(container.manifest.dublinCore.relation.map { SimpleStringProperty(it) })
+        contributors.addAll(container.manifest.dublinCore.contributor)
+        relations.addAll(container.manifest.dublinCore.relation)
         sources.addAll(container.manifest.dublinCore.source.map { SourceItem(it.identifier, it.language, it.version) })
-        checkingEntities.addAll(container.manifest.checking.checkingEntity.map { SimpleStringProperty(it) })
+        checkingEntities.addAll(container.manifest.checking.checkingEntity)
 
         projects.addAll(container.manifest.projects.map {
             ProjectItem(it.title, it.versification, it.identifier, it.sort, it.path,
@@ -224,78 +185,48 @@ class MainViewModel: ViewModel() {
     }
 
     fun saveResourceContainer() {
-        if (validateViewData()) {
-            container.manifest.dublinCore.conformsTo = conformsto
-            container.manifest.dublinCore.creator = creator
-            container.manifest.dublinCore.description = description
-            container.manifest.dublinCore.format = format
-            container.manifest.dublinCore.identifier = identifier
-            container.manifest.dublinCore.issued = issued.toString()
-            container.manifest.dublinCore.modified = modified.toString()
-            container.manifest.dublinCore.language.direction = languageDirection
-            container.manifest.dublinCore.language.identifier = languageIdentifier
-            container.manifest.dublinCore.language.title = languageTitle
-            container.manifest.dublinCore.publisher = publisher
-            container.manifest.dublinCore.rights = rights
-            container.manifest.dublinCore.subject = subject
-            container.manifest.dublinCore.title = title
-            container.manifest.dublinCore.type = type
-            container.manifest.dublinCore.version = version
-            container.manifest.checking.checkingLevel = checkingLevel
+        container.manifest.dublinCore.conformsTo = conformsto
+        container.manifest.dublinCore.creator = creator
+        container.manifest.dublinCore.description = description
+        container.manifest.dublinCore.format = format
+        container.manifest.dublinCore.identifier = identifier
+        container.manifest.dublinCore.issued = issued.toString()
+        container.manifest.dublinCore.modified = modified.toString()
+        container.manifest.dublinCore.language.direction = languageDirection
+        container.manifest.dublinCore.language.identifier = languageIdentifier
+        container.manifest.dublinCore.language.title = languageTitle
+        container.manifest.dublinCore.publisher = publisher
+        container.manifest.dublinCore.rights = rights
+        container.manifest.dublinCore.subject = subject
+        container.manifest.dublinCore.title = title
+        container.manifest.dublinCore.type = type
+        container.manifest.dublinCore.version = version
+        container.manifest.checking.checkingLevel = checkingLevel
 
-            container.manifest.dublinCore.contributor = contributors.map { it.value }.toMutableList()
-            container.manifest.dublinCore.relation = relations.map { it.value }.toMutableList()
-            container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
-            container.manifest.checking.checkingEntity = checkingEntities.map { it.value }.toList()
-            container.manifest.projects = projects.map { it.toProject() }.toList()
+        container.manifest.dublinCore.contributor = contributors.toMutableList()
+        container.manifest.dublinCore.relation = relations.toMutableList()
+        container.manifest.dublinCore.source = sources.map { it.toSource() }.toMutableList()
+        container.manifest.checking.checkingEntity = checkingEntities.toList()
+        container.manifest.projects = projects.map { it.toProject() }.toList()
 
+        if (ValidateResourceContainer().validate(container)) {
+            processing = true
             ResourceContainer.save(container)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
                     .doOnError {
-                        println(it.message)
                         showPopup(DialogFragment.TYPE.ERROR, it.toString())
                     }
                     .onErrorComplete()
+                    .doFinally { processing = false }
                     .subscribe {
-                        println("Saved")
                         showPopup(DialogFragment.TYPE.SUCCESS,
                                 "The Resource Container has been successfully saved!")
                     }
-        }
-        else {
+        } else {
             showPopup(DialogFragment.TYPE.ERROR,
-                    "The Resource Container has not been saved! Check the data filled in properly.")
+                    "The Resource Container has not been saved! Make sure the data filled in properly.")
         }
-    }
-
-    fun validateViewData(): Boolean {
-        if (conformsto.isNullOrEmpty()
-                || creator.isNullOrEmpty()
-                || description.isNullOrEmpty()
-                || format.isNullOrEmpty()
-                || identifier.isNullOrEmpty()
-                || issued == null
-                || modified == null
-                || languageDirection.isNullOrEmpty()
-                || languageIdentifier.isNullOrEmpty()
-                || languageTitle.isNullOrEmpty()
-                || publisher.isNullOrEmpty()
-                || rights.isNullOrEmpty()
-                || subject.isNullOrEmpty()
-                || title.isNullOrEmpty()
-                || type.isNullOrEmpty()
-                || version.isNullOrEmpty()
-                || checkingLevel.isNullOrEmpty()
-                || contributors.isEmpty()
-                || relations.isEmpty()
-                || sources.isEmpty()
-                || checkingEntities.isEmpty()
-                || projects.isEmpty()) {
-            return false
-        }
-
-        return true
     }
 
     fun clearViewData() {
