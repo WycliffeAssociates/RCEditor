@@ -1,26 +1,19 @@
 package org.wa.rceditor.application.viewmodel
 
-import com.jfoenix.controls.JFXButton
-import com.jfoenix.controls.JFXDialog
-import com.jfoenix.controls.JFXDialogLayout
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import io.reactivex.schedulers.Schedulers
 import javafx.beans.property.SimpleListProperty
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.StringProperty
-import javafx.scene.layout.StackPane
 import org.wa.rceditor.application.app.MainView
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.model.SourceItem
-import org.wa.rceditor.application.view.fragments.DialogFragment
 import org.wa.rceditor.application.view.fragments.MessageDialog
-import org.wa.rceditor.application.view.fragments.StringListDialog
 import org.wa.rceditor.domain.ValidateResourceContainer
 import org.wa.rceditor.domain.create
 import org.wa.rceditor.domain.open
 import org.wa.rceditor.domain.save
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import tornadofx.*
+import java.lang.Exception
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
@@ -261,15 +254,6 @@ class MainViewModel: ViewModel() {
         checkingEntities.clear()
         projects.clear()
     }
-
-    /*fun showPopup(type: DialogFragment.TYPE?, message: String?) {
-        find<DialogFragment>(
-                mapOf(
-                        DialogFragment::type to type,
-                        DialogFragment::message to message
-                )
-        ).openModal()
-    }*/
 
     fun showPopup(type: MessageDialog.TYPE, message: String) {
         val mainView = primaryStage.scene.findUIComponents().first() as MainView
