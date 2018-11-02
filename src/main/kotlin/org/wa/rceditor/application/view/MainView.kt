@@ -4,8 +4,6 @@ import javafx.beans.binding.Bindings
 import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Priority
-import javafx.scene.paint.Paint
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.view.fragments.*
 import org.wa.rceditor.application.viewmodel.MainViewModel
@@ -37,7 +35,7 @@ class MainView : View("Resource Container Editor") {
                         button(graphic = Styles.openFileIcon()) {
                             tooltip("Open resource container")
                             action {
-                                viewModel.handleOpenDocumentSelected()
+                                viewModel.handleOpenDirectorySelected()
                             }
                         }
                         button(graphic = Styles.saveFileIcon()) {
@@ -196,7 +194,7 @@ class MainView : View("Resource Container Editor") {
                             listview(viewModel.projects()) {
                                 paddingBottom = 5.0
                                 isEditable = true
-                                cellFragment(ProjectItemFragment::class)
+                                cellFragment(ProjectCell::class)
                             }
                         }
                     }

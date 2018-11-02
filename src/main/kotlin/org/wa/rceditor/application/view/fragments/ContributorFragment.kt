@@ -29,7 +29,7 @@ class ContributorFragment: Fragment("Contributor") {
             listview(viewModel.contributors()) {
                 isEditable = true
                 vgrow = Priority.ALWAYS
-                cellFragment(ContributorItemFragment::class)
+                cellFragment(ContributorCell::class)
             }
         }
     }

@@ -3,7 +3,6 @@ package org.wa.rceditor.application.model
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
 import org.wycliffeassociates.resourcecontainer.entity.Project
-import org.wycliffeassociates.resourcecontainer.entity.Source
 import tornadofx.*
 import java.util.*
 
@@ -14,8 +13,6 @@ class ProjectItem(
         sort: Int,
         path: String,
         category: String) {
-
-    val id: UUID = UUID.randomUUID()
 
     private var title: String by property(title)
     val titleProperty = getProperty(ProjectItem::title)
@@ -37,21 +34,6 @@ class ProjectItem(
 
     private var category: String by property(category)
     val categoryProperty = getProperty(ProjectItem::category)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other?.javaClass != javaClass) return false
-
-        other as ProjectItem
-
-        if (id != other.id) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
 
     fun toProject() = Project(
         title,

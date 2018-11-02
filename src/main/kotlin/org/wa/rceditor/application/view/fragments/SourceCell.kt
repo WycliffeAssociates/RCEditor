@@ -2,14 +2,12 @@ package org.wa.rceditor.application.view.fragments
 
 import javafx.scene.layout.Priority
 import org.wa.rceditor.application.Styles
-import org.wa.rceditor.application.model.ContributorItem
-import org.wa.rceditor.application.model.ContributorItemModel
 import org.wa.rceditor.application.model.SourceItem
 import org.wa.rceditor.application.model.SourceItemModel
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class SourceItemFragment: ListCellFragment<SourceItem>() {
+class SourceCell: ListCellFragment<SourceItem>() {
     private val viewModel by inject<MainViewModel>()
     private val source = SourceItemModel(itemProperty)
 

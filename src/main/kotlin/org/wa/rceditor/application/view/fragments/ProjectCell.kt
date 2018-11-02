@@ -8,7 +8,7 @@ import org.wa.rceditor.application.model.ProjectItemModel
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
-class ProjectItemFragment: ListCellFragment<ProjectItem>() {
+class ProjectCell: ListCellFragment<ProjectItem>() {
     private val viewModel by inject<MainViewModel>()
     private val project = ProjectItemModel(itemProperty)
 
@@ -28,49 +28,43 @@ class ProjectItemFragment: ListCellFragment<ProjectItem>() {
         form {
             removeWhen { editingProperty.not() }
             fieldset {
-                field {
+                field("Title") {
                     textfield(project.title) {
                         hgrow = Priority.ALWAYS
                         removeWhen { editingProperty.not() }
                         whenVisible { requestFocus() }
                         action { commitEdit(item) }
-                        promptText = "Title"
                     }
                 }
-                field {
+                field("Versification") {
                     textfield(project.versification) {
                         hgrow = Priority.ALWAYS
                         action { commitEdit(item) }
-                        promptText = "Versification"
                     }
                 }
-                field {
+                field("Identifier") {
                     textfield(project.identifier) {
                         hgrow = Priority.ALWAYS
                         action { commitEdit(item) }
-                        promptText = "Identifier"
                     }
                 }
-                field {
+                field("Sort") {
                     textfield(project.sort, NumberStringConverter()) {
                         filterInput { it.controlNewText.isInt() }
                         hgrow = Priority.ALWAYS
                         action { commitEdit(item) }
-                        promptText = "Sort"
                     }
                 }
-                field {
+                field("Path") {
                     textfield(project.path) {
                         hgrow = Priority.ALWAYS
                         action { commitEdit(item) }
-                        promptText = "Path"
                     }
                 }
-                field {
+                field("Category") {
                     textfield(project.category) {
                         hgrow = Priority.ALWAYS
                         action { commitEdit(item) }
-                        promptText = "Category"
                     }
                 }
             }

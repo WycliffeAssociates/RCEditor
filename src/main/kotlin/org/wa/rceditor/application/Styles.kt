@@ -15,11 +15,11 @@ class Styles : Stylesheet() {
         val prompt by cssclass()
         val itemRoot by cssclass()
         val closeIcon by cssclass()
-        val contentLabel by cssid()
         val addItemRoot by cssclass()
         val boldLabel by cssclass()
-
         val menuIcon by cssclass()
+
+        val contentLabel by cssid()
 
         fun closeIcon() = FontAwesomeIconView(FontAwesomeIcon.CLOSE).apply {
             glyphSize = 22
