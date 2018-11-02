@@ -101,6 +101,7 @@ class MainViewModel: ViewModel() {
         chooseDirectory("Create Resource Container")?.let {
             processing = true
             directoryLoaded = false
+
             ResourceContainer.create(it)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())
@@ -122,6 +123,7 @@ class MainViewModel: ViewModel() {
         chooseDirectory("Open Resource Container")?.let {
             processing = true
             directoryLoaded = false
+            
             ResourceContainer.open(it)
                     .observeOn(JavaFxScheduler.platform())
                     .subscribeOn(Schedulers.io())

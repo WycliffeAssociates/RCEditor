@@ -13,7 +13,7 @@ class ProjectItem(
         sort: Int = 1,
         path: String = "",
         category: String = "") {
-
+  
     private var title: String by property(title)
     val titleProperty = getProperty(ProjectItem::title)
 
