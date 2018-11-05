@@ -267,7 +267,14 @@ class MainView : View("Resource Container Editor") {
                                         field {
                                             this += JFXTextField().apply {
                                                 bind(viewModel.checkingLevelProperty)
-                                                required()
+                                                filterInput { it.controlNewText.isInt() }
+                                                validator {
+                                                    if (it != null && (it?.matches("^[0-3]{1,1}$".toRegex()))!!.not()) {
+                                                        error("This value should be from 0 to 3")
+                                                    } else {
+                                                        null
+                                                    }
+                                                }
 
                                                 promptText = "Checking Level"
                                                 isLabelFloat = true

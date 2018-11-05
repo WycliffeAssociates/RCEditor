@@ -141,7 +141,12 @@ class MainViewModel: ViewModel() {
     fun handleSaveDocumentSelected() {
         try {
             validate()
-            saveResourceContainer()
+            if (isValid) {
+                saveResourceContainer()
+            } else {
+                showPopup(MessageDialog.TYPE.ERROR,
+                        "The Resource Container has not been saved! Make sure the data filled in properly.")
+            }
         } catch (e: UninitializedPropertyAccessException) {
             showPopup(MessageDialog.TYPE.ERROR,
                     "First create a new resource container or open an existing one")

@@ -128,6 +128,12 @@ class Styles : Stylesheet() {
                     label {
                         textFill = c("#ffffff")
                     }
+                    closeIcon {
+                        fill = c("#fff")
+                        and(hover) {
+                            fill = c("#ff0")
+                        }
+                    }
                 }
             }
         }
@@ -145,6 +151,12 @@ class Styles : Stylesheet() {
                     promptTextFill = c("#ffe300")
                     fontWeight = FontWeight.BOLD
                     unfocusedColor.value += c("#ffe300")
+                }
+                closeIcon {
+                    fill = c("#fff")
+                    and(hover) {
+                        fill = c("#ff0")
+                    }
                 }
             }
         }
