@@ -269,7 +269,7 @@ class MainView : View("Resource Container Editor") {
                                                 bind(viewModel.checkingLevelProperty)
                                                 filterInput { it.controlNewText.isInt() }
                                                 validator {
-                                                    if (it != null && (it?.matches("^[0-3]{1,1}$".toRegex()))!!.not()) {
+                                                    if (it != null && (it?.matches("^[0-3]{1,1}$".toRegex())).not()) {
                                                         error("This value should be from 0 to 3")
                                                     } else {
                                                         null
