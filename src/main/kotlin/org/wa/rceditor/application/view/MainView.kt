@@ -8,7 +8,10 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
-import org.wa.rceditor.application.view.fragments.*
+import org.wa.rceditor.application.view.fragments.NewProjectDialog
+import org.wa.rceditor.application.view.fragments.ProjectCell
+import org.wa.rceditor.application.view.fragments.SourceListDialog
+import org.wa.rceditor.application.view.fragments.StringListDialog
 import org.wa.rceditor.application.viewmodel.MainViewModel
 import tornadofx.*
 
@@ -102,23 +105,8 @@ class MainView : View("Resource Container Editor") {
                                         field("Contributor") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    JFXDialog().apply {
-                                                        dialogContainer = stackPane
-                                                        content = JFXDialogLayout().apply {
-                                                            setHeading(label("Contributor"))
-                                                            setBody(StringListDialog("Contributor name",
-                                                                    viewModel.contributorsProperty))
-                                                            setActions(JFXButton("Close").apply {
-                                                                action { close() }
-                                                            })
-                                                        }
-                                                        transitionType = JFXDialog.DialogTransition.LEFT
-                                                        isOverlayClose = false
-                                                    }.show()
-
-                                                    /*val sf = find<ContributorFragment>()
-                                                    sf.listView.items = viewModel.contributorsProperty
-                                                    sf.openModal()*/
+                                                    StringListDialog("Contributor", viewModel.contributorsProperty)
+                                                            .show(stackPane)
                                                 }
                                             }
                                         }
@@ -207,23 +195,8 @@ class MainView : View("Resource Container Editor") {
                                         field("Relation") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    JFXDialog().apply {
-                                                        dialogContainer = stackPane
-                                                        content = JFXDialogLayout().apply {
-                                                            setHeading(label("Relation"))
-                                                            setBody(StringListDialog("Relation",
-                                                                    viewModel.relationsProperty))
-                                                            setActions(JFXButton("Close").apply {
-                                                                action { close() }
-                                                            })
-                                                        }
-                                                        transitionType = JFXDialog.DialogTransition.LEFT
-                                                        isOverlayClose = false
-                                                    }.show()
-
-                                                    /*val sf = find<RelationFragment>()
-                                                    sf.listView.items = viewModel.relationsProperty
-                                                    sf.openModal()*/
+                                                    StringListDialog("Relation", viewModel.relationsProperty)
+                                                            .show(stackPane)
                                                 }
                                             }
                                         }
@@ -239,22 +212,8 @@ class MainView : View("Resource Container Editor") {
                                         field("Source") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    JFXDialog().apply {
-                                                        dialogContainer = stackPane
-                                                        content = JFXDialogLayout().apply {
-                                                            setHeading(label("Source"))
-                                                            setBody(SourceListDialog(viewModel.sourcesProperty))
-                                                            setActions(JFXButton("Close").apply {
-                                                                action { close() }
-                                                            })
-                                                        }
-                                                        transitionType = JFXDialog.DialogTransition.LEFT
-                                                        isOverlayClose = false
-                                                    }.show()
-
-                                                    /*val sf = find<SourceFragment>()
-                                                    sf.listView.items = viewModel.sourcesProperty
-                                                    sf.openModal()*/
+                                                    SourceListDialog(viewModel.sourcesProperty)
+                                                            .show(stackPane)
                                                 }
                                             }
                                         }
@@ -300,30 +259,22 @@ class MainView : View("Resource Container Editor") {
                                         field("Checking Entity") {
                                             this += JFXButton("Edit").apply {
                                                 action {
-                                                    JFXDialog().apply {
-                                                        dialogContainer = stackPane
-                                                        content = JFXDialogLayout().apply {
-                                                            setHeading(label("Checking Entity"))
-                                                            setBody(StringListDialog("Checking Entity",
-                                                                    viewModel.checkingEntitiesProperty))
-                                                            setActions(JFXButton("Close").apply {
-                                                                action { close() }
-                                                            })
-                                                        }
-                                                        transitionType = JFXDialog.DialogTransition.LEFT
-                                                        isOverlayClose = false
-                                                    }.show()
-
-                                                    /*val sf = find<CheckingEntityFragment>()
-                                                    sf.listView.items = viewModel.checkingEntitiesProperty
-                                                    sf.openModal()*/
+                                                    StringListDialog("Checking Entity", viewModel.checkingEntitiesProperty)
+                                                            .show(stackPane)
                                                 }
                                             }
                                         }
                                         field {
                                             this += JFXTextField().apply {
                                                 bind(viewModel.checkingLevelProperty)
-                                                required()
+                                                filterInput { it.controlNewText.isInt() }
+                                                validator {
+                                                    if (it != null && (it?.matches("^[0-3]{1,1}$".toRegex())).not()) {
+                                                        error("This value should be from 0 to 3")
+                                                    } else {
+                                                        null
+                                                    }
+                                                }
 
                                                 promptText = "Checking Level"
                                                 isLabelFloat = true
@@ -358,28 +309,7 @@ class MainView : View("Resource Container Editor") {
                                     }
                                     addClass(Styles.addButton)
                                     action {
-                                        val dialog = JFXDialog()
-                                        val projectDialog = NewProjectDialog(projectListView, dialog)
-                                        dialog.apply {
-                                            dialogContainer = stackPane
-                                            content = JFXDialogLayout().apply {
-                                                setHeading(label("Project"))
-                                                setBody(projectDialog)
-                                                setActions(JFXButton("Add").apply {
-                                                    action {
-                                                        projectDialog.commitAll()
-                                                    }
-                                                }, JFXButton("Cancel").apply {
-                                                    action {
-                                                        close()
-                                                    }
-                                                })
-                                            }
-                                            transitionType = JFXDialog.DialogTransition.LEFT
-                                            isOverlayClose = false
-                                        }.show()
-
-                                        //find<ProjectFragment>(mapOf(ProjectFragment::listView to projectListView)).openModal()
+                                        NewProjectDialog(projectListView).show(stackPane)
                                     }
                                     visibleWhen {
                                         Bindings.equal(1, tabPane.selectionModel.selectedIndexProperty())

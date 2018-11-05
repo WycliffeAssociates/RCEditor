@@ -4,10 +4,7 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon
 import de.jensd.fx.glyphs.materialicons.MaterialIconView
 import javafx.geometry.Pos
 import javafx.scene.Cursor
-import javafx.scene.effect.DropShadow
-import javafx.scene.effect.Effect
 import javafx.scene.paint.Color
-import javafx.scene.shape.StrokeType
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
@@ -23,6 +20,7 @@ class Styles : Stylesheet() {
         val menuButton by cssclass()
         val addButton by cssclass()
         val dialogBody by cssclass("jfx-layout-body")
+        val unfocusedColor by cssproperty<MultiValue<Color>>("-jfx-unfocus-color")
 
         val contentLabel by cssid()
 
@@ -120,14 +118,47 @@ class Styles : Stylesheet() {
             padding = box(10.px)
             prefWidth = 500.px
 
-            label {
-                textFill = c("#000")
+            listView {
+                listCell {
+                    label {
+                        textFill = c("#000000")
+                    }
+                }
+                listCell and selected {
+                    label {
+                        textFill = c("#ffffff")
+                    }
+                    closeIcon {
+                        fill = c("#fff")
+                        and(hover) {
+                            fill = c("#ff0")
+                        }
+                    }
+                }
             }
         }
-        /*listCell {
-            and(selected) {
-                backgroundColor += c("#94008B")
+        listView {
+            listCell and selected {
+                backgroundColor += c("#f8e3f8")
             }
-        }*/
+        }
+        listView and focused {
+            listCell and selected {
+                backgroundColor += c("#94008b")
+                textFill = c("#ffffff")
+                textField {
+                    textFill = c("#ffffff")
+                    promptTextFill = c("#ffe300")
+                    fontWeight = FontWeight.BOLD
+                    unfocusedColor.value += c("#ffe300")
+                }
+                closeIcon {
+                    fill = c("#fff")
+                    and(hover) {
+                        fill = c("#ff0")
+                    }
+                }
+            }
+        }
     }
 }
