@@ -1,0 +1,15 @@
+{
+    "platform": "windows64",
+    "jdk": "jre-8u192-windows-x64.zip",
+    "executable": "rceditor",
+    "classpath": [
+        "build/libs/rceditor-1.0.jar"
+    ],
+    "mainclass": "org.wa.rceditor.application.MyAppKt",
+    "vmargs": [
+    	"Xmx1G"
+    ],
+    "resources": [],
+    "minimizejre": "hard",
+    "output": "build/executables/win"
+}
