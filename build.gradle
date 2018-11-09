@@ -1,6 +1,3 @@
-import com.badlogicgames.packr.PackrConfig
-import com.badlogicgames.packr.Packr
-
 buildscript {
     ext.kotlin_version = "1.2.71"
 
@@ -8,12 +5,11 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://jitpack.io" }
+        maven { url "https://maven.ej-technologies.com/repository" }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "edu.sc.seis.gradle:launch4j:2.4.4"
-        classpath "com.github.libgdx:packr:master-SNAPSHOT"
+        classpath group: "com.install4j", name: "install4j-gradle", version: "7.0.8"
     }
 }
 
@@ -26,7 +22,7 @@ group "rceditor"
 version "1.0"
 
 apply plugin: "kotlin"
-apply plugin: "edu.sc.seis.launch4j"
+apply plugin: "install4j"
 
 repositories {
     mavenCentral()
@@ -51,42 +47,11 @@ dependencies {
     testCompile group: "junit", name: "junit", version: "4.12"
 }
 
-task deployLinux {
-    doLast {
-        new Packr().main("packr-config/linux.json")
-    }
-}
-
-task deployWin {
-    doLast {
-        new Packr().main("packr-config/win.json")
-    }
-}
-
-task deployMac {
-    doLast {
-        new Packr().main("packr-config/macos.json")
-    }
-}
-
-task deployAll {
-    doLast {
-
-    }
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
 mainClassName = "org.wa.rceditor.application.MyAppKt"
-
-launch4j {
-    mainClassName = mainClassName
-    icon = "${projectDir}/icon.ico"
-    outfile = "rceditor.exe"
-    productName = "RC Editor"
-}
 
 jar {
     manifest {
@@ -103,7 +68,48 @@ jar {
     }
 }
 
-deployWin.dependsOn build
-deployLinux.dependsOn build
-deployMac.dependsOn build
-deployAll.dependsOn(deployWin, deployLinux, deployMac)
+install4j {
+    installDir = file('/opt/install4j7')
+}
+
+task downloadWindowsJre(type: FileDownload) {
+    sourceUrl = "https://download.ej-technologies.com/bundles/packed2/windows-amd64-1.8.0_192.tar.gz"
+    target = new File("windows-amd64-1.8.0_192.tar.gz")
+}
+
+task downloadMacosJre(type: FileDownload) {
+    sourceUrl = "https://download.ej-technologies.com/bundles/packed2/macosx-amd64-1.8.0_192.tar.gz"
+    target = new File("macos-amd64-1.8.0_192.tar.gz")
+}
+
+task downloadLinuxJre(type: FileDownload) {
+    sourceUrl = "http://javadl.oracle.com/webapps/download/AutoDL?BundleId=235717_2787e4a523244c269598db4e85c51e0c"
+    target = new File("linux-amd64-1.8.0_192.tar.gz")
+}
+
+task media(type: com.install4j.gradle.Install4jTask) {
+    projectFile = file("rceditor.install4j")
+    release = version
+    verbose = true
+
+    dependsOn clean
+    dependsOn build
+    build.mustRunAfter clean
+
+    dependsOn downloadWindowsJre
+    dependsOn downloadMacosJre
+    dependsOn downloadLinuxJre
+}
+
+class FileDownload extends DefaultTask {
+    @Input
+    String sourceUrl
+
+    @OutputFile
+    File target
+
+    @TaskAction
+    void download() {
+        ant.get(src: sourceUrl, dest: target)
+    }
+}
