@@ -74,20 +74,37 @@ install4j {
 
 task downloadWindowsJre(type: FileDownload) {
     sourceUrl = "https://download.ej-technologies.com/bundles/packed2/windows-amd64-1.8.0_192.tar.gz"
-    target = new File("windows-amd64-1.8.0_192.tar.gz")
+    target = new File("build/jre/windows-amd64-1.8.0_192.tar.gz")
 }
 
 task downloadMacosJre(type: FileDownload) {
     sourceUrl = "https://download.ej-technologies.com/bundles/packed2/macosx-amd64-1.8.0_192.tar.gz"
-    target = new File("macos-amd64-1.8.0_192.tar.gz")
+    target = new File("build/jre/macosx-amd64-1.8.0_192.tar.gz")
 }
 
 task downloadLinuxJre(type: FileDownload) {
     sourceUrl = "http://javadl.oracle.com/webapps/download/AutoDL?BundleId=235717_2787e4a523244c269598db4e85c51e0c"
-    target = new File("linux-amd64-1.8.0_192.tar.gz")
+    target = new File("build/linux-amd64-1.8.0_191_temp.tar.gz")
 }
 
-task media(type: com.install4j.gradle.Install4jTask) {
+task untarLinuxJre(type: Sync) { Sync z->
+    z.from downloadLinuxJre.outputs.files.collect{ project.tarTree(it) }
+    z.into("build/temp")
+}
+
+task tarLinuxJre(type: Tar) {
+    archiveName = "linux-amd64-1.8.0_191.tar.gz"
+    from("build/temp/jre1.8.0_191")
+    destinationDir = file("build/jre")
+    compression = Compression.GZIP
+}
+
+task cleanLinuxTempFiles(type: Delete) {
+    delete "build/temp"
+    delete file("build/linux-amd64-1.8.0_191_temp.tar.gz")
+}
+
+task createMedia(type: com.install4j.gradle.Install4jTask) {
     projectFile = file("rceditor.install4j")
     release = version
     verbose = true
@@ -99,6 +116,13 @@ task media(type: com.install4j.gradle.Install4jTask) {
     dependsOn downloadWindowsJre
     dependsOn downloadMacosJre
     dependsOn downloadLinuxJre
+    dependsOn untarLinuxJre
+    dependsOn tarLinuxJre
+    dependsOn cleanLinuxTempFiles
+
+    cleanLinuxTempFiles.mustRunAfter tarLinuxJre
+    tarLinuxJre.mustRunAfter untarLinuxJre
+    untarLinuxJre.mustRunAfter downloadLinuxJre
 }
 
 class FileDownload extends DefaultTask {
