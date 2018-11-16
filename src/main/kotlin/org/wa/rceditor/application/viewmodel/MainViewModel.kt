@@ -13,6 +13,7 @@ import org.wa.rceditor.domain.open
 import org.wa.rceditor.domain.save
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import tornadofx.*
+import java.io.File
 import java.lang.Exception
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -96,7 +97,7 @@ class MainViewModel: ViewModel() {
     // ------------- Handlers ---------------- //
 
     fun handleNewDocumentSelected() {
-        chooseDirectory("Create Resource Container")?.let {
+        chooseDirectory("Create Resource Container", File(System.getProperty("user.home")))?.let {
             processing = true
             directoryLoaded = false
 
@@ -118,7 +119,7 @@ class MainViewModel: ViewModel() {
     }
 
     fun handleOpenDirectorySelected() {
-        chooseDirectory("Open Resource Container")?.let {
+        chooseDirectory("Open Resource Container", File(System.getProperty("user.home")))?.let {
             processing = true
             directoryLoaded = false
             
