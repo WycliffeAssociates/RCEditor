@@ -14,7 +14,6 @@ class StringListDialog(title: String, listItems: ObservableList<String>): JFXDia
         content = JFXDialogLayout().apply {
             setHeading(label(title))
             setBody(vbox {
-                prefWidth = 400.0
                 spacing = 15.0
 
                 hbox {

@@ -116,7 +116,7 @@ class Styles : Stylesheet() {
         }
         dialogBody {
             padding = box(10.px)
-            prefWidth = 500.px
+            prefWidth = 600.px
 
             listView {
                 listCell {

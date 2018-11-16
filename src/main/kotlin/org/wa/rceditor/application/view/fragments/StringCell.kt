@@ -9,6 +9,21 @@ class StringCell: ListCellFragment<String>() {
     override val root = hbox {
         addClass(Styles.itemRoot)
 
+        button(graphic = Styles.closeIcon()) {
+            hboxConstraints {
+                marginLeft = -10.0
+                marginRight = 5.0
+            }
+
+            removeWhen { parent.hoverProperty().not().or(editingProperty) }
+            action { cell?.listView?.items?.remove(item) }
+        }
+
+        hbox {
+            prefWidth = 13.0
+            removeWhen { parent.hoverProperty().or(editingProperty) }
+        }
+
         label(itemProperty) {
             setId(Styles.contentLabel)
             hgrow = Priority.ALWAYS
@@ -26,10 +41,6 @@ class StringCell: ListCellFragment<String>() {
                     commitEdit(item)
                 }
             }
-        }
-        button(graphic = Styles.closeIcon()) {
-            removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { cell?.listView?.items?.remove(item) }
         }
     }
 }

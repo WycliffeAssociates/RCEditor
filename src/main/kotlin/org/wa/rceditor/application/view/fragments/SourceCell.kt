@@ -13,6 +13,22 @@ class SourceCell: ListCellFragment<SourceItem>() {
     override val root = hbox {
         addClass(Styles.itemRoot)
         spacing = 5.0
+
+        button(graphic = Styles.closeIcon()) {
+            hboxConstraints {
+                marginLeft = -10.0
+                marginRight = 5.0
+            }
+
+            removeWhen { parent.hoverProperty().not().or(editingProperty) }
+            action { cell?.listView?.items?.remove(item) }
+        }
+
+        hbox {
+            prefWidth = 13.0
+            removeWhen { parent.hoverProperty().or(editingProperty) }
+        }
+
         label(model.identifier) {
             setId(Styles.contentLabel)
             hgrow = Priority.ALWAYS
@@ -52,10 +68,6 @@ class SourceCell: ListCellFragment<SourceItem>() {
             isLabelFloat = true
             bind(model.version)
             required()
-        }
-        button(graphic = Styles.closeIcon()) {
-            removeWhen { parent.hoverProperty().not().or(editingProperty) }
-            action { cell?.listView?.items?.remove(item) }
         }
     }
 }
