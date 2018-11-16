@@ -6,6 +6,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
+import javafx.scene.paint.Color
 import org.wa.rceditor.application.Styles
 import org.wa.rceditor.application.model.ProjectItem
 import org.wa.rceditor.application.view.fragments.NewProjectDialog
@@ -26,6 +27,9 @@ class MainView : View("Resource Container Editor") {
     lateinit var stackPane: StackPane
 
     init {
+        primaryStage.minWidth = 650.0
+        primaryStage.minHeight = 400.0
+
         with(root) {
             top {
                 vbox {
@@ -77,6 +81,10 @@ class MainView : View("Resource Container Editor") {
                     paddingHorizontal = 20.0
                 }
                 stackpane {
+                    fitToParentWidth()
+                    style {
+                        paddingRight = 20.0
+                    }
                     stackPane = this
                     this += JFXTabPane().apply {
                         tabPane = this
