@@ -1,11 +1,11 @@
 package org.wa.rceditor.application
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon
-import de.jensd.fx.glyphs.materialicons.MaterialIconView
 import javafx.geometry.Pos
 import javafx.scene.Cursor
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.javafx.FontIcon
 import tornadofx.*
 
 class Styles : Stylesheet() {
@@ -24,34 +24,34 @@ class Styles : Stylesheet() {
 
         val contentLabel by cssid()
 
-        fun closeIcon() = MaterialIconView(MaterialIcon.CLOSE).apply {
-            glyphSize = 22
+        fun closeIcon() = FontIcon("gmi-close").apply {
             addClass(closeIcon)
+            iconSize = 22
         }
 
-        fun newFileIcon() = MaterialIconView(MaterialIcon.CREATE_NEW_FOLDER).apply {
-            glyphSize = 32
+        fun newFileIcon() = FontIcon("gmi-create-new-folder").apply {
             addClass(menuIcon)
+            iconSize = 32
         }
 
-        fun openFileIcon() = MaterialIconView(MaterialIcon.FOLDER_OPEN).apply {
-            glyphSize = 32
+        fun openFileIcon() = FontIcon("gmi-folder-open").apply {
             addClass(menuIcon)
+            iconSize = 32
         }
 
-        fun saveFileIcon() = MaterialIconView(MaterialIcon.SAVE).apply {
-            glyphSize = 32
+        fun saveFileIcon() = FontIcon("gmi-save").apply {
             addClass(menuIcon)
+            iconSize = 32
         }
 
-        fun quitIcon() = MaterialIconView(MaterialIcon.EXIT_TO_APP).apply {
-            glyphSize = 32
+        fun quitIcon() = FontIcon("gmi-exit-to-app").apply {
             addClass(menuIcon)
+            iconSize = 32
         }
 
-        fun addIcon() = MaterialIconView(MaterialIcon.ADD).apply {
-            glyphSize = 32
+        fun addIcon() = FontIcon("gmi-add").apply {
             addClass(addIcon)
+            iconSize = 32
         }
     }
 
