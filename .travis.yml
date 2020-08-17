@@ -1,0 +1,47 @@
+language: java
+dist: bionic
+jdk:
+- openjdk11
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -f $HOME/.gradle/caches/*/plugin-resoloution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper"
+script:
+- "./gradlew shadowJar"
+- URL=$(curl -s 'https://api.github.com/repos/WycliffeAssociates/Jar2AppImage/releases?per_page=1' | jq -r '.[] | .zipball_url')
+- curl -Ls $URL --output jar2app.zip
+- unzip -q -j jar2app.zip -d jar2app
+- cp /build/libs/rc-editor.jar ./jar2app/rc-editor.jar
+- cp jar2appvars.env ./jar2app/vars.env
+- cd jar2app && ./build.sh && cd ..
+- export JREPATH="./jar2app/jre"
+- "./gradlew -PjrePath=$JREPATH createExe"
+- export APPFILE=$(find ./jar2app -name 'BTTConverterDesktop*.AppImage'  | tr -t "\n" "")
+- export EXEFILE=$(find ./converter -name '*.exe'  | tr -t "\n" "")
+- mkdir out
+- cp $APPFILE ./out
+- cp $EXEFILE ./out
+addons:
+  artifacts:
+    s3_region: us-east-1
+    working_dir: out
+    target_paths:
+    - "/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_TAG}"
+    paths:
+    - $(find . -name '*.AppImage'  | tr "\n" ":")
+    - $(find . -name '*.exe'  | tr "\n" ":")
+deploy:
+  provider: releases
+  api_key:
+    secure: KosyiKWdOa85alNy/MAXp+pzbZzowo3aIkxgJSjBVxNv3diQ2jqbde03AdAnkaXfhpesYUfByq4vkNMgVRRqwy4oebxzR0Shb8KAJMClKNjG/i+zCNTB5cXpebptDfRicHR/T4WETaCY5q4J66u0WkXvAeORwILvgzgqQbi/d2/bov6kajYimHuu7RqxsW5mxLxjcoT+1gfQL46SEjDqzLlEFhYrcVQyKvlIZNDV1kNTUF3NMowDJjPnVYVCe3ZGSwknwZ7XYVP+CdxGSOcTMM9ZuKFlWpOzheD7hZUtc8zV1LPPx1NowvWAxlMqK7CiRuo2gwwOEZTN6apPOlHP9UBWYtC2pkMXU9cbTLHC3cs89W5LWSOgfdbgfqrUGzv78XlOzwd5E5cRR+5Uw7zKvaet+gKBdhe5SOpG2wHnE+m8XXrjMiwO+UlFhmFiDvt5bm1ZrBL30OPvRiOZohikoRk2hGl/mKSl04chBIXYnNbJgKGzGRzSj0rG1MLZppyKNHU4ytwz3ru+OG6wtAnvTBaVeaCCIZuowg347QxGiX9aYXgeXPdbXOwk/4SCVEcdYZGHGrYkaGSzhd47Y7kWNjlzgMzDb4B6tKBE2zYt11XcCUef8kbaea1uGBisagAopXzbMV7YyMWuQ1h9wmoL+PFH4u7YNFbMD3CRW4mzDhU=
+  file: 
+  - $(find . -name '*.AppImage'  | tr "\n" ":")
+  - $(find . -name '*.exe'  | tr "\n" ":")
+  on:
+    repo: WycliffeAssociates/RCEditor
+    branch: master
+    tags: true
+  skip_cleanup: 'true'
