@@ -16,7 +16,9 @@ script:
 - unzip -q -j jar2app.zip -d jar2app
 - cp build/libs/rc-editor.jar ./jar2app/rc-editor.jar
 - cp jar2appvars.env ./jar2app/vars.env
-- cd jar2app && ./build.sh && cd ..
+- cd jar2app
+- travis_wait ./build.sh
+- cd ..
 - export JREPATH="./jar2app/jre"
 - "./gradlew -PjrePath=$JREPATH createExe"
 - export APPFILE=$(find ./jar2app -name 'BTTConverterDesktop*.AppImage'  | tr -t "\n" "")
