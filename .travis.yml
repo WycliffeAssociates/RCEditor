@@ -21,7 +21,7 @@ script:
 - cd ..
 - export JREPATH="./jar2app/jre"
 - "./gradlew -PjrePath=$JREPATH createExe"
-- export APPFILE=$(find ./jar2app -name 'BTTConverterDesktop*.AppImage'  | tr -t "\n" "")
+- export APPFILE=$(find ./jar2app -name 'rc-editor*.AppImage'  | tr -t "\n" "")
 - export EXEFILE=$(find ./converter -name '*.exe'  | tr -t "\n" "")
 - mkdir out
 - cp $APPFILE ./out
